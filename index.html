@@ -117,12 +117,26 @@
         #location-modal.show { display: flex; }
         .modal-content {
             background: white;
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 2.5rem;
+            border-radius: 16px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            max-width: 550px; /* Increased max-width */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             position: relative;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        #location-modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .emoji-icon {
+            transform: scale(0);
+            animation: popIn 0.5s 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        @keyframes popIn {
+            to { transform: scale(1); }
         }
         .modal-close-btn {
             position: absolute;
@@ -201,16 +215,16 @@
 
             // --- Data ---
             const locations = [
-                { id: 'botanical_gardens', lat: 11.4155, lng: 76.7118, title: 'Botanical Gardens', description: 'Sprawling gardens with a vast collection of flora.', image: 'https://placehold.co/400x300/A8D5BA/FFFFFF?text=Gardens', type: 'garden' },
-                { id: 'ooty_lake', lat: 11.4087, lng: 76.6917, title: 'Ooty Lake', description: 'An artificial lake with popular boating facilities.', image: 'https://placehold.co/400x300/87CEEB/FFFFFF?text=Ooty+Lake', type: 'lake' },
-                { id: 'doddabetta_peak', lat: 11.4002, lng: 76.7350, title: 'Doddabetta Peak', description: 'The highest point in the Nilgiris with a telescope house.', image: 'https://placehold.co/400x300/C2B280/FFFFFF?text=Doddabetta', type: 'viewpoint' },
-                { id: 'rose_garden', lat: 11.4111, lng: 76.7175, title: 'Rose Garden', description: 'Home to one of the largest collections of roses in India.', image: 'https://placehold.co/400x300/FFC0CB/FFFFFF?text=Rose+Garden', type: 'garden' },
-                { id: 'tea_factory', lat: 11.4131, lng: 76.7303, title: 'Tea Factory & Museum', description: 'Learn about tea processing and taste fresh Nilgiri tea.', image: 'https://placehold.co/400x300/967969/FFFFFF?text=Tea+Factory', type: 'factory' },
-                { id: 'pykara_lake', lat: 11.4556, lng: 76.6083, title: 'Pykara Lake', description: 'A serene lake and waterfall, ideal for picnics.', image: 'https://placehold.co/400x300/B0E0E6/FFFFFF?text=Pykara', type: 'lake' },
-                { id: 'avalanche_lake', lat: 11.3325, lng: 76.6267, title: 'Avalanche Lake', description: 'A beautiful lake surrounded by a rolling landscape.', image: 'https://placehold.co/400x300/ADD8E6/FFFFFF?text=Avalanche', type: 'lake' },
-                { id: 'st_stephens', lat: 11.4147, lng: 76.7029, title: 'St. Stephen\'s Church', description: 'A colonial-era church with stunning architecture.', image: 'https://placehold.co/400x300/D2B48C/FFFFFF?text=Church', type: 'historical' },
-                { id: 'mountain_railway', lat: 11.4098, lng: 76.7011, title: 'Nilgiri Mountain Railway', description: 'A UNESCO World Heritage site offering scenic train rides.', image: 'https://placehold.co/400x300/A9A9A9/FFFFFF?text=Railway', type: 'historical' },
-                { id: 'pine_forest', lat: 11.4397, lng: 76.6344, title: 'Pine Forest', description: 'A tranquil and scenic forest of pine trees.', image: 'https://placehold.co/400x300/228B22/FFFFFF?text=Pine+Forest', type: 'viewpoint' }
+                { id: 'botanical_gardens', lat: 11.4155, lng: 76.7118, title: 'Botanical Gardens', description: 'Sprawling gardens with a vast collection of flora.', image: 'https://placehold.co/400x300/A8D5BA/FFFFFF?text=Gardens', type: 'garden', emoji: '🌳', bestTime: 'Mar-May', timeSpent: '2-3 hours' },
+                { id: 'ooty_lake', lat: 11.4087, lng: 76.6917, title: 'Ooty Lake', description: 'An artificial lake with popular boating facilities.', image: 'https://placehold.co/400x300/87CEEB/FFFFFF?text=Ooty+Lake', type: 'lake', emoji: '🛶', bestTime: 'All Year', timeSpent: '1-2 hours' },
+                { id: 'doddabetta_peak', lat: 11.4002, lng: 76.7350, title: 'Doddabetta Peak', description: 'The highest point in the Nilgiris with a telescope house.', image: 'https://placehold.co/400x300/C2B280/FFFFFF?text=Doddabetta', type: 'viewpoint', emoji: '⛰️', bestTime: 'Sep-Nov', timeSpent: '1 hour' },
+                { id: 'rose_garden', lat: 11.4111, lng: 76.7175, title: 'Rose Garden', description: 'Home to one of the largest collections of roses in India.', image: 'https://placehold.co/400x300/FFC0CB/FFFFFF?text=Rose+Garden', type: 'garden', emoji: '🌹', bestTime: 'Apr-Jun', timeSpent: '1-2 hours' },
+                { id: 'tea_factory', lat: 11.4131, lng: 76.7303, title: 'Tea Factory & Museum', description: 'Learn about tea processing and taste fresh Nilgiri tea.', image: 'https://placehold.co/400x300/967969/FFFFFF?text=Tea+Factory', type: 'factory', emoji: '🍵', bestTime: 'Oct-Mar', timeSpent: '1 hour' },
+                { id: 'pykara_lake', lat: 11.4556, lng: 76.6083, title: 'Pykara Lake', description: 'A serene lake and waterfall, ideal for picnics.', image: 'https://placehold.co/400x300/B0E0E6/FFFFFF?text=Pykara', type: 'lake', emoji: '🏞️', bestTime: 'Aug-Oct', timeSpent: '2-3 hours' },
+                { id: 'avalanche_lake', lat: 11.3325, lng: 76.6267, title: 'Avalanche Lake', description: 'A beautiful lake surrounded by a rolling landscape.', image: 'https://placehold.co/400x300/ADD8E6/FFFFFF?text=Avalanche', type: 'lake', emoji: '🏞️', bestTime: 'Sep-Mar', timeSpent: '3-4 hours' },
+                { id: 'st_stephens', lat: 11.4147, lng: 76.7029, title: 'St. Stephen\'s Church', description: 'A colonial-era church with stunning architecture.', image: 'https://placehold.co/400x300/D2B48C/FFFFFF?text=Church', type: 'historical', emoji: '⛪', bestTime: 'All Year', timeSpent: '30 mins' },
+                { id: 'mountain_railway', lat: 11.4098, lng: 76.7011, title: 'Nilgiri Mountain Railway', description: 'A UNESCO World Heritage site offering scenic train rides.', image: 'https://placehold.co/400x300/A9A9A9/FFFFFF?text=Railway', type: 'historical', emoji: '🚂', bestTime: 'All Year', timeSpent: '3-4 hours' },
+                { id: 'pine_forest', lat: 11.4397, lng: 76.6344, title: 'Pine Forest', description: 'A tranquil and scenic forest of pine trees.', image: 'https://placehold.co/400x300/228B22/FFFFFF?text=Pine+Forest', type: 'viewpoint', emoji: '🌲', bestTime: 'Oct-Mar', timeSpent: '1-2 hours' }
             ];
 
 
@@ -418,14 +432,46 @@
             const closeModalBtn = document.querySelector('.modal-close-btn');
 
             const openModal = (location) => {
-                modalBody.innerHTML = `
-                    <h2 class="text-3xl font-bold mb-4">${location.title}</h2>
-                    <img src="${location.image}" alt="${location.title}" class="w-full h-64 object-cover rounded-lg mb-4">
-                    <p class="text-lg">${location.description}</p>
-                    <p class="text-sm text-gray-500 mt-4">Category: ${location.type}</p>
-                `;
+                modalBody.innerHTML = ''; // Clear previous content
+                modalBody.appendChild(createModalContent(location));
                 modal.classList.add('show');
                 feather.replace();
+                updateButtonStates(); // Ensure modal button state is correct
+            };
+
+            const createModalContent = (location) => {
+                const isAdded = itinerary.includes(location.id);
+                const content = document.createElement('div');
+                content.className = 'text-center';
+                content.innerHTML = `
+                    <div class="emoji-icon text-6xl mb-4">${location.emoji}</div>
+                    <h2 class="text-4xl font-bold font-lora mb-2">${location.title}</h2>
+                    <p class="text-lg text-gray-600 mb-6">${location.description}</p>
+
+                    <img src="${location.image}" alt="${location.title}" class="w-full h-56 object-cover rounded-lg mb-6 shadow-lg">
+
+                    <div class="grid grid-cols-2 gap-4 text-left mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-800">Best Time to Visit</h4>
+                            <p class="text-gray-700">${location.bestTime}</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800">Typical Time Spent</h4>
+                            <p class="text-gray-700">${location.timeSpent}</p>
+                        </div>
+                    </div>
+
+                    <button class="add-to-trip-btn w-full py-3 px-6 rounded-lg font-semibold text-lg subtle-btn" data-add-id="${location.id}" ${isAdded ? 'disabled' : ''}>
+                        ${isAdded ? 'Added to Your Trip ✔' : 'Add to My Trip'}
+                    </button>
+                `;
+
+                content.querySelector('.add-to-trip-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    addToItinerary(location.id);
+                });
+
+                return content;
             };
 
             const closeModal = () => {
