@@ -24,27 +24,54 @@
     <style>
         /* --- Base & Typography --- */
         :root {
-            --bg-main: #F3F4F6; /* Cool Gray 100 */
+            --bg-main: #FAFAF9; /* Stone 50 - Warmer */
             --bg-surface: #FFFFFF;
-            --text-primary: #111827; /* Gray 900 */
-            --text-secondary: #4B5563; /* Gray 600 */
+            --text-primary: #1C1917; /* Stone 900 */
+            --text-secondary: #57534E; /* Stone 600 */
+            --text-light: #78716C; /* Stone 500 */
+
             --accent-primary: #059669; /* Emerald 600 */
+            --accent-primary-hover: #047857;
+            --accent-primary-light: #D1FAE5;
+
             --accent-secondary: #EA580C; /* Orange 600 */
-            --accent-blue: #0284C7; /* Sky 600 */
-            --border-subtle: #E5E7EB;
+
+            --border-subtle: #E7E5E4; /* Stone 200 */
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow: hidden; /* Prevent body scroll */
         }
-        h1, h2, h3, .serif { font-family: 'Lora', serif; }
+
+        h1, h2, h3, h4, .serif {
+            font-family: 'Lora', serif;
+            letter-spacing: -0.02em;
+        }
 
         /* --- Layout --- */
-        .main-layout { display: grid; grid-template-columns: 350px 1fr; height: 100vh; }
-        #map { height: 100%; width: 100%; background-color: #E0E5EC; }
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr; /* Slightly wider sidebar for desktop */
+            height: 100vh;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            background-color: #E5E5E5;
+            z-index: 0;
+        }
 
         /* --- Animations & Transitions --- */
         .fade-in { animation: fadeIn 1s ease-in-out forwards; }
@@ -98,55 +125,76 @@
         }
 
         /* --- Sidebar & Location List --- */
-        .sidebar { background-color: var(--bg-surface); border-right: 1px solid var(--border-subtle); padding: 0; overflow-y: auto; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 500; }
+        .sidebar {
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
+            padding: 0;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 500;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.02);
+        }
+
         .location-item {
             background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: 0.75rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 0.75rem;
+            border: 1px solid transparent;
+            border-radius: var(--radius-lg);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
         }
+
         .location-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card);
+            border-color: var(--border-subtle);
         }
+
         .location-item.active {
             border-color: var(--accent-primary);
-            background-color: #ECFDF5; /* Emerald 50 */
+            background-color: var(--accent-primary-light);
+            box-shadow: var(--shadow-soft);
         }
 
         /* --- Filter Buttons --- */
         .filter-btn {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            background: var(--bg-surface);
+            background: white;
+            box-shadow: var(--shadow-soft);
         }
         .filter-btn:hover {
-            background-color: #F9FAFB;
+            transform: translateY(-1px);
             border-color: var(--text-secondary);
+            color: var(--text-primary);
         }
         .filter-btn.active {
             border-color: transparent;
-            background-color: var(--accent-primary);
+            background-color: var(--text-primary); /* Dark luxury feel */
             color: white;
-            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         /* --- Itinerary Panel --- */
         #itinerary-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
             border-top: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
         }
         .itinerary-item {
-            background-color: var(--bg-surface);
+            background-color: white;
             border: 1px solid var(--border-subtle);
-            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: all 0.2s ease;
         }
         .itinerary-item:hover {
             border-color: var(--accent-primary);
+            transform: translateX(4px);
         }
         .itinerary-item .remove-btn:hover svg { color: #DC2626; }
 
@@ -180,29 +228,48 @@
         }
         .popup-title { font-family: 'Lora', serif; font-weight: 700; color: var(--text-primary); }
 
-        /* --- Responsive Design --- */
+        /* --- Responsive Design (Mobile Hyper-Optimization) --- */
         @media (max-width: 768px) {
             .main-layout {
-                display: flex;
-                flex-direction: column-reverse;
+                display: block;
                 height: 100vh;
                 overflow: hidden;
+                position: relative;
             }
+
             #map-container {
-                flex-grow: 1;
+                position: absolute;
+                inset: 0;
+                height: 100%;
+                width: 100%;
                 z-index: 0;
             }
+
             /* Bottom Sheet / Mobile Sidebar */
             .sidebar {
-                height: 40vh !important; /* Force override of h-full */
+                position: absolute;
+                left: 0; right: 0; bottom: 0;
+                height: 85vh; /* Max height we expand to */
                 width: 100%;
+
                 border-right: none;
-                border-top: 1px solid var(--border-subtle);
-                border-radius: 20px 20px 0 0;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+                border-top: 1px solid rgba(255,255,255,0.2);
+                border-radius: 24px 24px 0 0;
+
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(16px);
+                box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+
                 z-index: 1000;
-                position: relative; /* Changed from fixed/absolute to part of flex flow */
-                transform: none !important; /* Reset transition */
+
+                /* Transition for snapping */
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                transform: translateY(calc(100% - 40vh)); /* Initial state: Peek */
+                will-change: transform;
+            }
+
+            .sidebar.dragging {
+                transition: none; /* Disable transition while dragging */
             }
 
             /* Sticky Header in Sheet */
@@ -210,15 +277,19 @@
                 position: sticky;
                 top: 0;
                 z-index: 20;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(8px);
-                border-bottom: 1px solid var(--border-subtle);
+                background: inherit; /* Inherit translucent bg */
                 padding: 1rem 1.5rem 0.5rem;
-                border-radius: 20px 20px 0 0;
+                border-radius: 24px 24px 0 0;
+                /* Handle drag area */
+                cursor: grab;
             }
 
-            /* Drag Handle */
-            .sidebar::before {
+            .sidebar > div:first-child:active {
+                cursor: grabbing;
+            }
+
+            /* Drag Handle Visual */
+            .sidebar::after {
                 content: '';
                 position: absolute;
                 top: 8px;
@@ -226,18 +297,29 @@
                 transform: translateX(-50%);
                 width: 40px;
                 height: 4px;
-                background-color: #E5E7EB;
+                background-color: #E7E5E4;
                 border-radius: 2px;
                 z-index: 30;
+                pointer-events: none;
             }
 
-            .mobile-toggle { display: none !important; } /* We don't need the toggle anymore */
+            .mobile-toggle { display: none !important; }
 
             /* Compact Header on Mobile */
-            .sidebar h1 { font-size: 1.25rem; }
+            .sidebar h1 { font-size: 1.25rem; margin-bottom: 0.25rem; }
             .sidebar p { display: none; }
 
-            #filter-container { margin-top: 0.5rem; }
+            .sidebar .guide-badge { display: none; } /* Hide "Guide" badge to save space */
+
+            #filter-container {
+                margin-top: 0.25rem;
+                padding-bottom: 0.5rem;
+            }
+
+            /* Adjust content padding */
+            #location-list {
+                padding-bottom: 100px; /* Space for FAB */
+            }
 
             /* Itinerary Panel on Mobile */
             #itinerary-panel {
@@ -245,12 +327,12 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: 85vh; /* Large drawer */
+                height: 90vh;
                 border-radius: 24px 24px 0 0;
                 transform: translateY(110%);
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
                 z-index: 2000;
-                box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+                box-shadow: 0 -20px 50px rgba(0,0,0,0.25);
                 display: flex;
                 flex-direction: column;
             }
@@ -259,25 +341,26 @@
                 transform: translateY(0);
             }
 
-            /* Overlay backdrop for mobile itinerary */
             .mobile-backdrop {
-                position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                position: fixed; inset: 0; background: rgba(0,0,0,0.4);
                 backdrop-filter: blur(4px); z-index: 1900;
-                opacity: 0; pointer-events: none; transition: opacity 0.3s;
+                opacity: 0; pointer-events: none; transition: opacity 0.4s;
             }
             .mobile-backdrop.open { opacity: 1; pointer-events: auto; }
 
-            #toggle-itinerary-mobile { pointer-events: none; } /* Header in panel is just title on mobile */
+            #toggle-itinerary-mobile { pointer-events: none; }
             #toggle-itinerary-mobile .feather-chevron-up { display: none; }
 
-            /* Add a close handle/button for mobile */
             .mobile-panel-handle {
                 width: 48px; height: 6px; background: #E5E7EB; border-radius: 99px;
                 margin: 0 auto 1.5rem; flex-shrink: 0;
             }
 
-            /* Hide Leaflet Zoom on Mobile for cleaner look (pinch to zoom is standard) */
+            /* Hide Leaflet Zoom on Mobile */
             .leaflet-control-zoom { display: none !important; }
+
+            /* Adjust map center slightly up to account for sheet */
+             /* We can't do this with CSS easily, but we can ensure markers fly to valid areas */
         }
 
         /* --- Location Details Modal --- */
@@ -387,10 +470,10 @@
 
     <div class="main-layout">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar fade-in flex flex-col h-full bg-white shadow-xl relative">
+        <aside id="sidebar" class="sidebar flex flex-col h-full bg-white shadow-xl relative">
             <div class="p-6 pb-0 flex-shrink-0 z-10 bg-white/90 backdrop-blur-sm sticky top-0">
                 <div class="mb-6">
-                    <span class="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider rounded mb-2">Guide</span>
+                    <span class="guide-badge inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider rounded mb-2">Guide</span>
                     <h1 class="text-3xl font-bold text-gray-900 font-serif">Explore Ooty</h1>
                     <p class="text-sm text-gray-500 mt-1">Discover the Queen of Hill Stations</p>
                 </div>
@@ -475,12 +558,13 @@
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { attribution: '© <a href="https://carto.com/attributions">CARTO</a>' }).addTo(map);
 
             // --- Icons ---
+            const iconColor = "#059669"; // Emerald 600
             const icons = {
-                'viewpoint': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3zM8.5 14l2.5 3 3-4.5 2.5 3.5"/></svg>`,
-                'historical': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
-                'garden': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 10.9c-1.3 3.3-3.3 6.6-6.4 9.3-2.3 2-4.8 3.3-7.5 3.8-1.1.2-2.2-.4-2.7-1.4s-.2-2.3.6-3.1c.9-.9 2.1-1.5 3.4-1.9 2.2-.7 4.5-2 6.5-3.8 2.2-2 4-4.5 5.2-7.4.4-1 .1-2.2-.8-2.8-.9-.6-2.1-.4-2.8.5-1.1 1.4-2.4 3.1-3.7 4.8m-2.1-2.1c-.2.2-.4.4-.6.6"></path></svg>`,
-                'factory': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
-                'lake': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 2 12 2-8 2 8 2-6 2 2h2"/></svg>`
+                'viewpoint': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3zM8.5 14l2.5 3 3-4.5 2.5 3.5"/></svg>`,
+                'historical': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
+                'garden': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 10.9c-1.3 3.3-3.3 6.6-6.4 9.3-2.3 2-4.8 3.3-7.5 3.8-1.1.2-2.2-.4-2.7-1.4s-.2-2.3.6-3.1c.9-.9 2.1-1.5 3.4-1.9 2.2-.7 4.5-2 6.5-3.8 2.2-2 4-4.5 5.2-7.4.4-1 .1-2.2-.8-2.8-.9-.6-2.1-.4-2.8.5-1.1 1.4-2.4 3.1-3.7 4.8m-2.1-2.1c-.2.2-.4.4-.6.6"></path></svg>`,
+                'factory': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+                'lake': `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-6 2 12 2-8 2 8 2-6 2 2h2"/></svg>`
             };
 
             const locationListEl = document.getElementById('location-list');
@@ -605,13 +689,89 @@
                 }, 3000);
             };
 
-            const addToItinerary = (id) => {
+            const animateFlyTo = (startEl, targetEl, callback) => {
+                if (!startEl || !targetEl) {
+                    if (callback) callback();
+                    return;
+                }
+
+                const startRect = startEl.getBoundingClientRect();
+                const targetRect = targetEl.getBoundingClientRect();
+
+                // Check if target is visible/on screen
+                if (targetRect.width === 0 || targetRect.height === 0) {
+                     if (callback) callback();
+                     return;
+                }
+
+                const flyingEl = document.createElement('div');
+                flyingEl.style.position = 'fixed';
+                flyingEl.style.zIndex = '9999';
+                flyingEl.style.pointerEvents = 'none';
+                flyingEl.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+
+                flyingEl.style.background = 'var(--accent-primary)';
+                flyingEl.style.borderRadius = '50%';
+                flyingEl.style.width = '12px';
+                flyingEl.style.height = '12px';
+
+                // Start center of button
+                const startX = startRect.left + startRect.width / 2 - 6;
+                const startY = startRect.top + startRect.height / 2 - 6;
+
+                flyingEl.style.left = `${startX}px`;
+                flyingEl.style.top = `${startY}px`;
+
+                document.body.appendChild(flyingEl);
+
+                // Trigger reflow
+                flyingEl.getBoundingClientRect();
+
+                // End center of target
+                const targetX = targetRect.left + targetRect.width / 2 - 6;
+                const targetY = targetRect.top + targetRect.height / 2 - 6;
+
+                flyingEl.style.left = `${targetX}px`;
+                flyingEl.style.top = `${targetY}px`;
+                flyingEl.style.transform = 'scale(0.5)';
+
+                setTimeout(() => {
+                    flyingEl.remove();
+                    // Add bump animation to target
+                    targetEl.animate([
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.2)' },
+                        { transform: 'scale(1)' }
+                    ], {
+                        duration: 300,
+                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    });
+                    if (callback) callback();
+                }, 800);
+            };
+
+            const addToItinerary = (id, startEl = null) => {
                 if (!itinerary.includes(id)) {
                     itinerary.push(id);
                     renderItinerary();
                     saveItinerary();
                     const location = locations.find(l => l.id === id);
                     showToast(`Added ${location.title} to your trip`);
+
+                    // Fly Animation
+                    if (startEl) {
+                        let targetEl;
+                        if (window.innerWidth <= 768) {
+                            targetEl = document.getElementById('mobile-trip-fab');
+                        } else {
+                             targetEl = document.getElementById('itinerary-count');
+                             if (!targetEl || targetEl.offsetParent === null) {
+                                  // If badge hidden, target the header text or icon
+                                  targetEl = document.querySelector('#toggle-itinerary-mobile i');
+                             }
+                        }
+                        animateFlyTo(startEl, targetEl);
+                    }
                 }
             };
 
@@ -761,7 +921,7 @@
 
                 content.querySelector('.add-to-trip-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    addToItinerary(location.id);
+                    addToItinerary(location.id, e.currentTarget);
                 });
 
                 return content;
@@ -783,8 +943,8 @@
                 }
                 const addToTripBtn = popupElement.querySelector('.add-to-trip-btn');
                  if (addToTripBtn) {
-                    addToTripBtn.addEventListener('click', () => {
-                        addToItinerary(addToTripBtn.dataset.addId);
+                    addToTripBtn.addEventListener('click', (e) => {
+                        addToItinerary(addToTripBtn.dataset.addId, e.currentTarget);
                     });
                 }
             });
@@ -836,7 +996,7 @@
 
                 item.querySelector('.add-sidebar-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    addToItinerary(loc.id);
+                    addToItinerary(loc.id, e.currentTarget);
                 });
                 locationListEl.appendChild(item);
 
@@ -911,6 +1071,127 @@
             loadItinerary();
             renderItinerary();
             feather.replace();
+
+            // --- Mobile Bottom Sheet Logic ---
+            const initMobileSheet = () => {
+                const sidebar = document.getElementById('sidebar');
+                const header = sidebar.firstElementChild;
+                let startY = 0;
+                let currentY = 0;
+                let isDragging = false;
+                let currentSheetState = 'half'; // 'half' or 'full'
+
+                // Constants
+                const getSheetHeight = () => window.innerHeight * 0.85; // 85vh
+                const getHalfHeight = () => window.innerHeight * 0.40; // 40vh
+
+                const calculateTransform = (visibleHeight) => {
+                    const sheetHeight = getSheetHeight();
+                    return sheetHeight - visibleHeight;
+                };
+
+                const updateSheetPosition = (y) => {
+                    sidebar.style.transform = `translateY(${y}px)`;
+                };
+
+                const snapToState = (state) => {
+                    const sheetHeight = getSheetHeight();
+                    const halfHeight = getHalfHeight();
+
+                    let targetY;
+                    if (state === 'full') {
+                        targetY = 0;
+                    } else { // half
+                        targetY = calculateTransform(halfHeight);
+                    }
+
+                    sidebar.classList.remove('dragging');
+                    updateSheetPosition(targetY);
+                    currentSheetState = state;
+                };
+
+                // Initialize
+                if (window.innerWidth <= 768) {
+                    snapToState('half');
+                }
+
+                header.addEventListener('touchstart', (e) => {
+                    if (window.innerWidth > 768) return;
+                    // Only drag if at top of scroll or dragging header
+                    const scrollContainer = document.getElementById('location-list');
+                    if (scrollContainer.scrollTop > 0 && !header.contains(e.target)) return;
+
+                    isDragging = true;
+                    startY = e.touches[0].clientY;
+
+                    // Get current transform value
+                    const style = window.getComputedStyle(sidebar);
+                    const matrix = new DOMMatrix(style.transform);
+                    currentY = matrix.m42;
+
+                    sidebar.classList.add('dragging');
+                }, { passive: true });
+
+                document.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+
+                    const deltaY = e.touches[0].clientY - startY;
+                    let newY = currentY + deltaY;
+
+                    // Constraints
+                    const sheetHeight = getSheetHeight();
+                    const halfHeight = getHalfHeight();
+                    const minTransform = 0; // Fully expanded
+                    const maxTransform = calculateTransform(halfHeight); // Half state
+
+                    // Resistance at bounds
+                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.2;
+                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.2;
+
+                    updateSheetPosition(newY);
+                }, { passive: false });
+
+                document.addEventListener('touchend', (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+
+                    const movedY = e.changedTouches[0].clientY - startY;
+                    const sheetHeight = getSheetHeight();
+                    const halfHeight = getHalfHeight();
+                    const threshold = 50; // px to trigger snap
+
+                    // Logic to determine snap
+                    // currentY is starting position
+                    // movedY is delta
+                    // dragging UP (negative delta) -> wants Full
+                    // dragging DOWN (positive delta) -> wants Half
+
+                    if (currentSheetState === 'half') {
+                        if (movedY < -threshold) {
+                            snapToState('full');
+                        } else {
+                            snapToState('half');
+                        }
+                    } else { // full
+                        if (movedY > threshold) {
+                            snapToState('half');
+                        } else {
+                            snapToState('full');
+                        }
+                    }
+                });
+
+                // Handle Resize
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth <= 768) {
+                         snapToState(currentSheetState);
+                    } else {
+                        sidebar.style.transform = '';
+                    }
+                });
+            };
+
+            initMobileSheet();
         });
     </script>
 </body>
