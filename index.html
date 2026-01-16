@@ -24,35 +24,41 @@
     <style>
         /* --- Base & Typography --- */
         :root {
-            --bg-main: #FAFAF9; /* Stone 50 - Warmer */
+            --bg-main: #F5F5F4; /* Stone 100 - Slightly deeper/richer */
             --bg-surface: #FFFFFF;
-            --text-primary: #1C1917; /* Stone 900 */
-            --text-secondary: #57534E; /* Stone 600 */
+            --text-primary: #0C0A09; /* Stone 950 - Sharper contrast */
+            --text-secondary: #44403C; /* Stone 700 */
             --text-light: #78716C; /* Stone 500 */
 
-            --accent-primary: #059669; /* Emerald 600 */
-            --accent-primary-hover: #047857;
-            --accent-primary-light: #D1FAE5;
+            /* Sophisticated Emerald */
+            --accent-primary: #047857; /* Emerald 700 - Darker, more premium */
+            --accent-primary-hover: #064E3B; /* Emerald 900 */
+            --accent-primary-light: #ECFDF5; /* Emerald 50 */
+            --accent-primary-rgb: 4, 120, 87;
 
-            --accent-secondary: #EA580C; /* Orange 600 */
+            --accent-secondary: #C2410C; /* Orange 700 - Burnt orange, less neon */
 
             --border-subtle: #E7E5E4; /* Stone 200 */
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-            --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --radius-xl: 1.5rem;
+            /* Ultra-smooth shadows */
+            --shadow-soft: 0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 8px -3px rgba(0, 0, 0, 0.03);
+            --shadow-float: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 10px 20px -8px rgba(0, 0, 0, 0.06);
+            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+
+            --radius-md: 0.75rem; /* 12px */
+            --radius-lg: 1rem;    /* 16px */
+            --radius-xl: 1.75rem; /* 28px */
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow: hidden; /* Prevent body scroll */
+            overflow: hidden;
+            line-height: 1.6;
         }
 
         h1, h2, h3, h4, .serif {
@@ -128,27 +134,45 @@
         .sidebar {
             background-color: var(--bg-surface);
             border-right: 1px solid var(--border-subtle);
-            padding: 0;
-            overflow-y: auto;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
             z-index: 500;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.02);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.04);
+            /* Ensure smooth transforms for mobile sheet */
+            transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* Custom Scrollbar for Sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 20px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0,0,0,0.2);
         }
 
         .location-item {
             background: var(--bg-surface);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            margin-bottom: 1rem;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            margin-bottom: 1.25rem;
             position: relative;
             overflow: hidden;
+            /* Glassy feel on hover */
         }
 
         .location-item:hover {
-            transform: translateY(-4px);
+            transform: translateY(-4px) scale(1.01);
             box-shadow: var(--shadow-card);
-            border-color: var(--border-subtle);
+            border-color: rgba(4, 120, 87, 0.3); /* Soft emerald hint */
+            z-index: 10;
         }
 
         .location-item.active {
@@ -159,22 +183,24 @@
 
         /* --- Filter Buttons --- */
         .filter-btn {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             background: white;
             box-shadow: var(--shadow-soft);
+            letter-spacing: 0.01em;
         }
         .filter-btn:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             border-color: var(--text-secondary);
             color: var(--text-primary);
+            box-shadow: var(--shadow-card);
         }
         .filter-btn.active {
             border-color: transparent;
-            background-color: var(--text-primary); /* Dark luxury feel */
+            background-color: var(--text-primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.3);
         }
 
         /* --- Itinerary Panel --- */
@@ -208,23 +234,54 @@
         .modern-popup .leaflet-popup-content-wrapper {
             padding: 0;
             overflow: hidden;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255,255,255,0.5);
         }
         .modern-popup .leaflet-popup-content {
             margin: 0;
-            width: 280px !important;
+            width: 300px !important; /* Slightly wider */
         }
-        .modern-popup .leaflet-popup-tip-container {
-            width: 24px;
-            height: 12px;
-        }
+        .modern-popup .leaflet-popup-tip-container,
         .modern-popup .leaflet-popup-tip {
-            background: white;
-            box-shadow: none;
+            display: none; /* Float */
+        }
+
+        /* Custom Leaflet Controls */
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: none !important;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px !important;
+            margin-right: 24px !important;
+        }
+        .leaflet-control-zoom a {
+            background: white !important;
+            color: var(--text-primary) !important;
+            border-radius: 50% !important; /* Circular buttons */
+            width: 44px !important;
+            height: 44px !important;
+            line-height: 44px !important;
+            font-size: 20px !important;
+            box-shadow: var(--shadow-float) !important;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid var(--border-subtle) !important;
+        }
+        .leaflet-control-zoom a:hover {
+            background: var(--text-primary) !important;
+            color: white !important;
+            transform: scale(1.1);
+            border-color: transparent !important;
+        }
+        .leaflet-control-zoom a.leaflet-disabled {
+            background: #f5f5f5 !important;
+            color: #ccc !important;
+            cursor: not-allowed;
+            transform: none !important;
         }
         .popup-title { font-family: 'Lora', serif; font-weight: 700; color: var(--text-primary); }
 
@@ -253,17 +310,17 @@
                 width: 100%;
 
                 border-right: none;
-                border-top: 1px solid rgba(255,255,255,0.2);
-                border-radius: 24px 24px 0 0;
+                border-top: 1px solid rgba(255,255,255,0.4);
+                border-radius: 32px 32px 0 0; /* More rounded */
 
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(16px);
-                box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+                background: rgba(255, 255, 255, 0.96);
+                backdrop-filter: blur(20px);
+                box-shadow: 0 -10px 60px rgba(0,0,0,0.2);
 
                 z-index: 1000;
 
                 /* Transition for snapping */
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
                 transform: translateY(calc(100% - 40vh)); /* Initial state: Peek */
                 will-change: transform;
             }
@@ -292,33 +349,61 @@
             .sidebar::after {
                 content: '';
                 position: absolute;
-                top: 8px;
+                top: 10px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 40px;
-                height: 4px;
-                background-color: #E7E5E4;
-                border-radius: 2px;
+                width: 48px;
+                height: 5px;
+                background-color: #E5E5E5; /* Slightly darker for visibility */
+                border-radius: 100px;
                 z-index: 30;
                 pointer-events: none;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             }
 
             .mobile-toggle { display: none !important; }
 
             /* Compact Header on Mobile */
-            .sidebar h1 { font-size: 1.25rem; margin-bottom: 0.25rem; }
-            .sidebar p { display: none; }
-
-            .sidebar .guide-badge { display: none; } /* Hide "Guide" badge to save space */
+            .sidebar h1 { font-size: 1.5rem; margin-bottom: 0.1rem; }
+            .sidebar p { font-size: 0.875rem; display: block; margin-top: 0; }
+            .sidebar .guide-badge { display: none; }
 
             #filter-container {
-                margin-top: 0.25rem;
-                padding-bottom: 0.5rem;
+                margin-top: 0.5rem;
+                padding-bottom: 0.75rem;
             }
 
             /* Adjust content padding */
             #location-list {
-                padding-bottom: 100px; /* Space for FAB */
+                padding: 0 1rem 120px 1rem !important; /* Override padding, extra bottom space for FAB */
+            }
+
+            /* Mobile List Styling (Flat list feeling) */
+            .location-item {
+                padding: 1rem 0 !important;
+                margin-bottom: 0 !important;
+                border: none !important;
+                border-bottom: 1px solid var(--border-subtle) !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                gap: 1rem !important;
+            }
+            .location-item:last-child { border-bottom: none !important; }
+
+            .location-item .relative { /* Image wrapper */
+                width: 5.5rem !important;
+                height: 5.5rem !important;
+                border-radius: 0.75rem !important;
+            }
+
+            .location-item h3 {
+                font-size: 1.125rem !important; /* Larger title on mobile for touch */
+            }
+
+            .location-item button.add-sidebar-btn {
+                padding: 0.5rem; /* Larger touch target */
+                background-color: #F5F5F4;
             }
 
             /* Itinerary Panel on Mobile */
@@ -375,18 +460,18 @@
         #location-modal.show { display: flex; }
         .modal-content {
             background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
+            padding: 2rem;
+            border-radius: 24px;
             width: 90%;
-            max-width: 550px; /* Increased max-width */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             position: relative;
-            transform: scale(0.95);
+            transform: scale(0.9) translateY(20px);
             opacity: 0;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease-out;
         }
         #location-modal.show .modal-content {
-            transform: scale(1);
+            transform: scale(1) translateY(0);
             opacity: 1;
         }
         .emoji-icon {
@@ -415,13 +500,16 @@
             bottom: 24px;
             right: 24px;
             z-index: 1500;
-            background-color: var(--text-primary);
+            background: linear-gradient(135deg, #1C1917, #000000);
             color: white;
             border-radius: 9999px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, box-shadow 0.3s ease;
         }
-        .mobile-fab:active { transform: scale(0.95); }
+        .mobile-fab:active {
+            transform: scale(0.92);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
         .mobile-fab.hidden-fab {
             transform: scale(0) rotate(45deg);
             opacity: 0;
@@ -443,6 +531,11 @@
             align-items: center;
             justify-content: center;
             border: 2px solid white;
+        }
+
+        .mask-linear-fade {
+            mask-image: linear-gradient(to right, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
         }
     </style>
 </head>
@@ -471,18 +564,18 @@
     <div class="main-layout">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar flex flex-col h-full bg-white shadow-xl relative">
-            <div class="p-6 pb-0 flex-shrink-0 z-10 bg-white/90 backdrop-blur-sm sticky top-0">
+            <div class="p-8 pb-0 flex-shrink-0 z-10 bg-white/95 backdrop-blur-md sticky top-0 border-b border-stone-100 transition-all duration-500">
                 <div class="mb-6">
-                    <span class="guide-badge inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider rounded mb-2">Guide</span>
-                    <h1 class="text-3xl font-bold text-gray-900 font-serif">Explore Ooty</h1>
-                    <p class="text-sm text-gray-500 mt-1">Discover the Queen of Hill Stations</p>
+                    <span class="guide-badge inline-block px-3 py-1 bg-emerald-50 text-emerald-900 text-[10px] font-bold uppercase tracking-widest rounded-full mb-3 border border-emerald-100 shadow-sm">Travel Guide</span>
+                    <h1 class="text-4xl font-bold text-stone-900 font-serif tracking-tight leading-tight">Explore Ooty</h1>
+                    <p class="text-base text-stone-500 mt-2 font-light leading-relaxed">Discover the Queen of Hill Stations in style.</p>
                 </div>
 
-                <div id="filter-container" class="flex space-x-2 overflow-x-auto pb-4 scrollbar-hide">
-                    <button data-filter="all" class="filter-btn active px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap">All Places</button>
-                    <button data-filter="garden" class="filter-btn px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap">Gardens</button>
-                    <button data-filter="lake" class="filter-btn px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap">Lakes</button>
-                    <button data-filter="viewpoint" class="filter-btn px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap">Viewpoints</button>
+                <div id="filter-container" class="flex space-x-3 overflow-x-auto pb-6 scrollbar-hide pt-2 mask-linear-fade">
+                    <button data-filter="all" class="filter-btn active px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap">All Places</button>
+                    <button data-filter="garden" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap">Gardens</button>
+                    <button data-filter="lake" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap">Lakes</button>
+                    <button data-filter="viewpoint" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap">Viewpoints</button>
                 </div>
             </div>
 
@@ -897,25 +990,30 @@
                 const content = document.createElement('div');
                 content.className = 'text-center';
                 content.innerHTML = `
-                    <div class="emoji-icon text-6xl mb-4">${location.emoji}</div>
-                    <h2 class="text-4xl font-bold font-lora mb-2">${location.title}</h2>
-                    <p class="text-lg text-gray-600 mb-6">${location.description}</p>
-
-                    <img src="${location.image}" alt="${location.title}" class="w-full h-56 object-cover rounded-lg mb-6 shadow-lg">
-
-                    <div class="grid grid-cols-2 gap-4 text-left mb-6">
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-green-800">Best Time to Visit</h4>
-                            <p class="text-gray-700">${location.bestTime}</p>
-                        </div>
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-blue-800">Typical Time Spent</h4>
-                            <p class="text-gray-700">${location.timeSpent}</p>
+                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 shadow-xl group">
+                        <img src="${location.image}" alt="${location.title}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-left">
+                            <div class="emoji-icon text-4xl mb-3 drop-shadow-md origin-left">${location.emoji}</div>
+                            <h2 class="text-3xl font-bold font-serif text-white leading-tight drop-shadow-sm">${location.title}</h2>
                         </div>
                     </div>
 
-                    <button class="add-to-trip-btn w-full py-3 px-6 rounded-lg font-semibold text-lg subtle-btn" data-add-id="${location.id}" ${isAdded ? 'disabled' : ''}>
-                        ${isAdded ? 'Added to Your Trip ✔' : 'Add to My Trip'}
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed font-light text-left">${location.description}</p>
+
+                    <div class="grid grid-cols-2 gap-4 text-left mb-8">
+                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                            <h4 class="font-bold text-xs text-stone-400 uppercase tracking-wider mb-1">Best Time</h4>
+                            <p class="text-stone-800 font-semibold">${location.bestTime}</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                            <h4 class="font-bold text-xs text-stone-400 uppercase tracking-wider mb-1">Time Spent</h4>
+                            <p class="text-stone-800 font-semibold">${location.timeSpent}</p>
+                        </div>
+                    </div>
+
+                    <button class="add-to-trip-btn w-full py-4 px-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2" data-add-id="${location.id}" ${isAdded ? 'disabled' : ''}>
+                        ${isAdded ? '<span>Added to Trip</span> <i data-feather="check" class="w-5 h-5"></i>' : '<span>Add to Trip</span> <i data-feather="plus" class="w-5 h-5"></i>'}
                     </button>
                 `;
 
@@ -959,23 +1057,32 @@
             locations.forEach((loc, index) => {
                 // Add to sidebar
                 const item = document.createElement('div');
-                item.className = 'location-item p-3 cursor-pointer fade-in flex gap-3 items-start group';
+                item.className = 'location-item p-4 cursor-pointer fade-in flex gap-5 items-start group';
                 item.dataset.id = loc.id;
                 item.style.animationDelay = `${index * 50}ms`;
                 item.innerHTML = `
-                    <div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                        <img src="${loc.image}" alt="${loc.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500">
+                        <img src="${loc.image}" alt="${loc.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
                     </div>
-                    <div class="flex-grow min-w-0">
-                        <div class="flex justify-between items-start">
-                            <h3 class="font-bold text-gray-900 text-sm leading-tight mb-1 truncate pr-2">${loc.title}</h3>
-                            <button class="add-sidebar-btn flex-shrink-0" data-add-id="${loc.id}"></button>
+                    <div class="flex-grow min-w-0 flex flex-col h-24 justify-between py-0.5">
+                        <div>
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="font-bold text-gray-900 text-lg font-serif leading-tight pr-2 group-hover:text-emerald-800 transition-colors line-clamp-1">${loc.title}</h3>
+                                <button class="add-sidebar-btn flex-shrink-0 transform transition-transform duration-300 hover:rotate-90 hover:scale-110" data-add-id="${loc.id}"></button>
+                            </div>
+                            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-normal">${loc.description}</p>
                         </div>
-                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-2">${loc.description}</p>
-                        <div class="flex items-center gap-2">
-                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">
-                                ${loc.timeSpent}
-                            </span>
+
+                        <div class="flex items-center justify-between mt-auto">
+                             <div class="flex gap-2">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-semibold bg-stone-100 text-stone-600 tracking-wide uppercase border border-stone-200">
+                                    ${loc.timeSpent}
+                                </span>
+                             </div>
+                             <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-emerald-600 translate-x-[-5px] group-hover:translate-x-0">
+                                <i data-feather="arrow-right" class="w-4 h-4"></i>
+                             </span>
                         </div>
                     </div>
                 `;
@@ -1001,22 +1108,33 @@
                 locationListEl.appendChild(item);
 
                 // Add marker to map
-                const customIcon = L.divIcon({ html: `<div class="custom-marker-icon drop-shadow-md">${icons[loc.type] || icons['historical']}</div>`, className: '', iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28] });
+                const markerHtml = `
+                    <div class="custom-marker-container group">
+                         <div class="marker-circle bg-white text-emerald-700 rounded-full p-2.5 shadow-2xl border border-stone-100 flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-2 group-hover:bg-emerald-700 group-hover:text-white group-hover:border-transparent">
+                            ${icons[loc.type] || icons['historical']}
+                        </div>
+                    </div>
+                `;
+                const customIcon = L.divIcon({ html: markerHtml, className: '', iconSize: [48, 48], iconAnchor: [24, 24], popupAnchor: [0, -28] });
                 const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
+
                 marker.bindPopup(L.popup({closeButton: false, className: 'modern-popup'}).setContent(`
-                    <div>
-                        <div class="relative h-32">
-                            <img src="${loc.image}" alt="${loc.title}" class="popup-image w-full h-full object-cover rounded-t-lg">
-                            <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold shadow-sm">
+                    <div class="group">
+                        <div class="relative h-40 overflow-hidden">
+                            <img src="${loc.image}" alt="${loc.title}" class="popup-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold shadow-sm border border-white/50">
                                 ${loc.emoji}
                             </div>
+                            <div class="absolute bottom-3 left-4 right-4">
+                                <h3 class="popup-title text-xl font-serif text-white leading-tight drop-shadow-sm">${loc.title}</h3>
+                            </div>
                         </div>
-                        <div class="p-4">
-                            <h3 class="popup-title text-lg leading-tight mb-1">${loc.title}</h3>
-                            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${loc.description}</p>
-                            <div class="flex gap-2">
-                                <button class="add-to-trip-btn flex-1 py-2 px-3 rounded-lg font-medium text-xs transition-colors shadow-sm" data-add-id="${loc.id}">Add to Trip</button>
-                                <button class="more-info-btn py-2 px-3 rounded-lg font-medium text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" data-id="${loc.id}">Details</button>
+                        <div class="p-5 bg-white">
+                            <p class="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed font-light">${loc.description}</p>
+                            <div class="flex gap-3">
+                                <button class="add-to-trip-btn flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5" data-add-id="${loc.id}">Add to Trip</button>
+                                <button class="more-info-btn py-2.5 px-4 rounded-xl font-semibold text-xs bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all" data-id="${loc.id}">Details</button>
                             </div>
                         </div>
                     </div>
