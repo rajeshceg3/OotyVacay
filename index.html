@@ -474,43 +474,139 @@
         /* --- Location Details Modal --- */
         #location-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1050;
-            display: none; /* Hidden by default */
+            background-color: rgba(28, 25, 23, 0.4); /* Stone 900, low opacity */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2500; /* Higher than everything including sidebar/itinerary */
+            display: none;
             align-items: center;
             justify-content: center;
-        }
-        #location-modal.show { display: flex; }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            position: relative;
-            transform: scale(0.9) translateY(20px);
             opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease-out;
+            transition: opacity 0.3s ease;
         }
-        #location-modal.show .modal-content {
-            transform: scale(1) translateY(0);
+        #location-modal.show {
+            display: flex;
             opacity: 1;
         }
+
+        .modal-content {
+            background: #FAFAF9; /* Stone 50 */
+            padding: 0; /* Reset padding for edge-to-edge image */
+            border-radius: var(--radius-2xl);
+            width: 90%;
+            max-width: 440px;
+            max-height: 85vh; /* Prevent overflow on small screens */
+            display: flex;
+            flex-direction: column;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+                0 25px 50px -12px rgba(0, 0, 0, 0.35),
+                0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transform: scale(0.9) translateY(40px) rotateX(10deg);
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            transform-style: preserve-3d;
+            overflow: hidden; /* rounded corners */
+        }
+
+        #modal-body {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #location-modal.show .modal-content {
+            transform: scale(1) translateY(0) rotateX(0deg);
+            opacity: 1;
+        }
+
+        /* Staggered Animations */
+        .modal-stagger {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #location-modal.show .modal-stagger {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Delays */
+        #location-modal.show .modal-stagger:nth-child(1) { transition-delay: 0.1s; }
+        #location-modal.show .modal-stagger:nth-child(2) { transition-delay: 0.2s; }
+        #location-modal.show .modal-stagger:nth-child(3) { transition-delay: 0.3s; }
+        #location-modal.show .modal-stagger:nth-child(4) { transition-delay: 0.4s; }
+
         .emoji-icon {
-            transform: scale(0);
-            animation: popIn 0.5s 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            transform: scale(0) rotate(-20deg);
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        @keyframes popIn {
-            to { transform: scale(1); }
+        #location-modal.show .emoji-icon {
+            transform: scale(1) rotate(0deg);
         }
+
         .modal-close-btn {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            z-index: 20;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-close-btn:hover {
+            background: rgba(0, 0, 0, 0.4);
+            transform: scale(1.1) rotate(90deg);
+        }
+        .modal-close-btn:active {
+            transform: scale(0.9) rotate(90deg);
+        }
+
+        /* Tactile Cards */
+        .info-card {
+            background: white;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateZ(0);
+        }
+        .info-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08);
+            border-color: var(--text-light);
+        }
+
+        /* Modal specific button adjustments */
+        .modal-add-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-add-btn:active {
+            transform: scale(0.95);
+        }
+        .modal-add-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 120%; height: 120%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.4s ease;
+        }
+        .modal-add-btn:active::after {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         /* Utility */
@@ -576,7 +672,7 @@
     <div id="location-modal">
         <div class="modal-content">
             <button class="modal-close-btn">
-                <i data-feather="x" class="w-8 h-8 text-gray-600"></i>
+                <i data-feather="x" class="w-5 h-5"></i>
             </button>
             <div id="modal-body">
                 <!-- Content will be injected by JS -->
@@ -1019,33 +1115,45 @@
             const createModalContent = (location) => {
                 const isAdded = itinerary.includes(location.id);
                 const content = document.createElement('div');
-                content.className = 'text-center';
+                content.className = 'flex flex-col h-full';
                 content.innerHTML = `
-                    <div class="relative w-full h-64 rounded-2xl overflow-hidden mb-6 shadow-xl group">
+                    <div class="relative h-72 w-full modal-stagger group flex-shrink-0">
                         <img src="${location.image}" alt="${location.title}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 text-left">
-                            <div class="emoji-icon text-4xl mb-3 drop-shadow-md origin-left">${location.emoji}</div>
-                            <h2 class="text-3xl font-bold font-serif text-white leading-tight drop-shadow-sm">${location.title}</h2>
+                        <div class="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-8 right-6 text-left">
+                            <div class="emoji-icon text-5xl mb-4 drop-shadow-xl origin-left inline-block">${location.emoji}</div>
+                            <h2 class="text-3xl font-bold font-serif text-white leading-tight drop-shadow-md tracking-tight">${location.title}</h2>
                         </div>
                     </div>
 
-                    <p class="text-lg text-gray-600 mb-8 leading-relaxed font-light text-left">${location.description}</p>
-
-                    <div class="grid grid-cols-2 gap-4 text-left mb-8">
-                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
-                            <h4 class="font-bold text-xs text-stone-400 uppercase tracking-wider mb-1">Best Time</h4>
-                            <p class="text-stone-800 font-semibold">${location.bestTime}</p>
+                    <div class="p-8 pt-6 space-y-8 flex-grow overflow-y-auto">
+                        <div class="modal-stagger" style="transition-delay: 0.2s">
+                             <p class="text-lg text-stone-600 leading-relaxed font-light text-left">${location.description}</p>
                         </div>
-                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
-                            <h4 class="font-bold text-xs text-stone-400 uppercase tracking-wider mb-1">Time Spent</h4>
-                            <p class="text-stone-800 font-semibold">${location.timeSpent}</p>
+
+                        <div class="grid grid-cols-2 gap-4 text-left modal-stagger" style="transition-delay: 0.3s">
+                            <div class="info-card p-4 rounded-2xl flex flex-col gap-1">
+                                <div class="flex items-center gap-2 text-stone-400 mb-1">
+                                    <i data-feather="calendar" class="w-4 h-4"></i>
+                                    <h4 class="font-bold text-xs uppercase tracking-wider">Best Time</h4>
+                                </div>
+                                <p class="text-stone-800 font-semibold text-sm">${location.bestTime}</p>
+                            </div>
+                            <div class="info-card p-4 rounded-2xl flex flex-col gap-1">
+                                <div class="flex items-center gap-2 text-stone-400 mb-1">
+                                    <i data-feather="clock" class="w-4 h-4"></i>
+                                    <h4 class="font-bold text-xs uppercase tracking-wider">Time Spent</h4>
+                                </div>
+                                <p class="text-stone-800 font-semibold text-sm">${location.timeSpent}</p>
+                            </div>
+                        </div>
+
+                        <div class="modal-stagger pb-2" style="transition-delay: 0.4s">
+                            <button class="modal-add-btn add-to-trip-btn w-full py-4 px-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform transition-all flex items-center justify-center gap-3 ${isAdded ? 'bg-emerald-600 text-white' : 'bg-stone-900 text-white hover:-translate-y-1'}" data-add-id="${location.id}" ${isAdded ? 'disabled' : ''}>
+                                ${isAdded ? '<span>Added to Trip</span> <i data-feather="check" class="w-5 h-5"></i>' : '<span>Add to Trip</span> <i data-feather="plus" class="w-5 h-5"></i>'}
+                            </button>
                         </div>
                     </div>
-
-                    <button class="add-to-trip-btn w-full py-4 px-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2" data-add-id="${location.id}" ${isAdded ? 'disabled' : ''}>
-                        ${isAdded ? '<span>Added to Trip</span> <i data-feather="check" class="w-5 h-5"></i>' : '<span>Add to Trip</span> <i data-feather="plus" class="w-5 h-5"></i>'}
-                    </button>
                 `;
 
                 content.querySelector('.add-to-trip-btn').addEventListener('click', (e) => {
