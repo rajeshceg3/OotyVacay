@@ -26,6 +26,7 @@
         :root {
             /* Refined Stone Palette - Deeper, richer */
             --bg-main: #F7F5F3; /* Warmer Stone */
+            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
             --bg-surface: #FFFFFF;
             --text-primary: #191715; /* Nearly Black */
             --text-secondary: #5C5552; /* Warm Grey */
@@ -47,11 +48,15 @@
                 0 2px 4px rgba(0,0,0,0.02),
                 0 4px 8px rgba(0,0,0,0.02);
             --shadow-card:
-                0 10px 30px -10px rgba(0, 0, 0, 0.08),
-                0 4px 12px -2px rgba(0, 0, 0, 0.03);
+                0 10px 30px -10px rgba(0, 0, 0, 0.06),
+                0 4px 12px -2px rgba(0, 0, 0, 0.03),
+                0 0 0 1px rgba(0,0,0,0.02);
             --shadow-float:
-                0 20px 40px -12px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(0,0,0,0.02); /* Border tint */
+                0 25px 50px -12px rgba(0, 0, 0, 0.18),
+                0 0 0 1px rgba(0,0,0,0.02);
+            --shadow-emerald:
+                0 10px 25px -5px rgba(4, 120, 87, 0.15),
+                0 4px 10px -3px rgba(4, 120, 87, 0.1);
             --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
 
             /* Animations */
@@ -70,17 +75,18 @@
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-main);
+            background-image: var(--bg-texture); /* Subtle grain */
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow: hidden;
-            line-height: 1.5; /* Tighter for modern feel */
-            letter-spacing: -0.015em;
+            line-height: 1.6; /* Slightly more breathable */
+            letter-spacing: -0.01em;
         }
 
         h1, h2, h3, h4, .serif {
             font-family: 'Lora', serif;
-            letter-spacing: -0.03em; /* Tighter serif tracking */
+            letter-spacing: -0.04em; /* Very tight serif tracking for elegance */
             font-weight: 500;
         }
 
@@ -194,7 +200,7 @@
         /* Desktop Hover State */
         @media (hover: hover) {
             .location-item:hover {
-                transform: translateY(-2px) scale(1.005);
+                transform: translateY(-4px) scale(1.01);
                 box-shadow: var(--shadow-card);
                 border-color: rgba(0,0,0,0.05);
                 z-index: 10;
@@ -209,8 +215,15 @@
         /* Ring focus for active state */
         .location-item.active {
             border-color: var(--accent-primary);
-            box-shadow: 0 0 0 1px var(--accent-primary), var(--shadow-card);
+            box-shadow: 0 0 0 1px var(--accent-primary), var(--shadow-emerald); /* Emerald glow */
             background-color: var(--accent-primary-light);
+        }
+
+        /* Highlight from Map Hover */
+        .location-item.highlight-from-map {
+            border-color: var(--accent-primary);
+            background-color: var(--accent-primary-light);
+            transform: translateX(4px);
         }
 
         /* --- Filter Buttons --- */
@@ -274,12 +287,16 @@
         }
 
         /* Pulse for active/highlighted markers */
-        .custom-marker-container.active-marker .marker-circle {
+        .custom-marker-container.active-marker .marker-circle,
+        .custom-marker-container.marker-highlight .marker-circle {
             background-color: var(--text-primary);
             color: white;
             border-color: var(--text-primary);
+            transform: scale(1.2) translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
-        .custom-marker-container.active-marker::after {
+        .custom-marker-container.active-marker::after,
+        .custom-marker-container.marker-highlight::after {
             content: '';
             position: absolute;
             top: 50%; left: 50%;
@@ -514,6 +531,7 @@
                 right: 0;
                 height: 90vh;
                 height: 90dvh;
+                padding-bottom: env(safe-area-inset-bottom, 20px); /* Safe Area */
                 border-radius: 2rem 2rem 0 0;
                 transform: translateY(110%);
                 transition: transform 0.6s var(--ease-out-expo);
@@ -697,7 +715,7 @@
         /* Mobile FAB */
         .mobile-fab {
             position: fixed;
-            bottom: 24px;
+            bottom: calc(24px + env(safe-area-inset-bottom, 0px));
             right: 24px;
             z-index: 1500;
             background: linear-gradient(135deg, #1C1917, #000000);
@@ -1284,8 +1302,8 @@
                 item.dataset.id = loc.id;
                 item.style.animationDelay = `${index * 50}ms`;
                 item.innerHTML = `
-                    <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500">
-                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500 bg-stone-200">
+                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0')">
                         <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
                     </div>
                     <div class="flex-grow min-w-0 flex flex-col h-28 justify-between py-0.5">
@@ -1312,11 +1330,34 @@
 
                 const handleItemClick = (e) => {
                     if (!e.target.closest('.add-sidebar-btn')) {
-                        // Desktop: Fly to map
-                        // Mobile: Also fly to map, but maybe close sidebar?
-                        // For now, simple fly to
-                        map.flyTo([loc.lat, loc.lng], 15, { duration: 1.5 });
-                        markers[loc.id].openPopup();
+                        let targetLat = loc.lat;
+                        let targetLng = loc.lng;
+                        let targetZoom = 15;
+
+                        // Smart Map Centering for Mobile
+                        // Ensures the location is centered in the visible area above the bottom sheet
+                        if (window.innerWidth <= 768) {
+                            const mapHeight = map.getSize().y;
+                            // Sheet takes ~40% in half state. Visible area is top 60%.
+                            // Center of visible area is 30%. Map center is 50%.
+                            // Shift needed: 20% of height.
+                            // We need to shift the target Center DOWN (so the map moves up)
+                            const offset = mapHeight * 0.20;
+
+                            const point = map.project([loc.lat, loc.lng], targetZoom);
+                            const targetPoint = point.add([0, offset]);
+                            const targetLatLng = map.unproject(targetPoint, targetZoom);
+
+                            targetLat = targetLatLng.lat;
+                            targetLng = targetLatLng.lng;
+                        }
+
+                        map.flyTo([targetLat, targetLng], targetZoom, { duration: 1.5, easeLinearity: 0.25 });
+
+                        // Delay popup slightly to allow animation to start
+                        setTimeout(() => {
+                            markers[loc.id].openPopup();
+                        }, 500);
                     }
                 };
 
@@ -1345,6 +1386,36 @@
                 `;
                 const customIcon = L.divIcon({ html: markerHtml, className: '', iconSize: [48, 48], iconAnchor: [24, 24], popupAnchor: [0, -28] });
                 const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
+
+                // Bi-directional Hover Highlighting
+                // 1. List Item -> Map Marker
+                item.addEventListener('mouseenter', () => {
+                     const iconEl = marker.getElement();
+                     if (iconEl) {
+                         const container = iconEl.querySelector('.custom-marker-container');
+                         if(container) container.classList.add('marker-highlight');
+                         // Bring to front
+                         marker.setZIndexOffset(1000);
+                     }
+                });
+                item.addEventListener('mouseleave', () => {
+                    const iconEl = marker.getElement();
+                    if (iconEl) {
+                        const container = iconEl.querySelector('.custom-marker-container');
+                         if(container) container.classList.remove('marker-highlight');
+                        marker.setZIndexOffset(0);
+                    }
+                });
+
+                // 2. Map Marker -> List Item
+                marker.on('mouseover', () => {
+                    item.classList.add('highlight-from-map');
+                    // Optional: auto scroll if far away? No, might be annoying.
+                });
+                marker.on('mouseout', () => {
+                    item.classList.remove('highlight-from-map');
+                });
+
 
                 marker.bindPopup(L.popup({closeButton: false, className: 'modern-popup'}).setContent(`
                     <div class="group">
