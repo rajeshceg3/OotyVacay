@@ -24,66 +24,82 @@
     <style>
         /* --- Base & Typography --- */
         :root {
-            /* Refined Stone Palette - Deeper, richer */
-            --bg-main: #F5F2F0; /* Slightly cooler stone for better contrast */
-            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            /* Refined Stone Palette - Premium & Warm */
+            --bg-main: #FAFAF9; /* Stone 50 - Very light warm gray */
+            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
             --bg-surface: #FFFFFF;
-            --text-primary: #1C1917; /* Warm Black */
-            --text-secondary: #57534E; /* Warm Grey 600 */
-            --text-light: #A8A29E; /* Warm Grey 400 */
+            --text-primary: #1C1917; /* Stone 900 - Warm Black */
+            --text-secondary: #57534E; /* Stone 600 - Warm Grey */
+            --text-light: #A8A29E; /* Stone 400 */
 
-            /* Luxurious Emerald - More Jewel-toned */
-            --accent-primary: #059669; /* Emerald 600 - slightly brighter for better legibility */
+            /* Luxurious Emerald - Jewel-toned & High Contrast */
+            --accent-primary: #059669; /* Emerald 600 */
             --accent-primary-hover: #047857; /* Emerald 700 */
-            --accent-primary-light: #ECFDF5;
+            --accent-primary-light: #ECFDF5; /* Emerald 50 */
             --accent-primary-rgb: 5, 150, 105;
 
-            /* Warm Accent */
+            /* Warm Accent - Burnt Orange */
             --accent-secondary: #EA580C; /* Orange 600 */
 
             --border-subtle: #E7E5E4; /* Stone 200 */
 
-            /* Cinematic Shadows - Multi-layered & Diffused */
+            /* Ultra-Premium Shadows (Layered for diffusion) */
+            --shadow-sm:
+                0 1px 2px -1px rgba(28, 25, 23, 0.08),
+                0 1px 3px 0 rgba(28, 25, 23, 0.04);
             --shadow-soft:
-                0 2px 8px -2px rgba(28, 25, 23, 0.04),
-                0 4px 16px -4px rgba(28, 25, 23, 0.02);
+                0 4px 6px -1px rgba(28, 25, 23, 0.04),
+                0 2px 4px -1px rgba(28, 25, 23, 0.02);
             --shadow-card:
-                0 10px 40px -10px rgba(28, 25, 23, 0.08),
-                0 4px 12px -2px rgba(28, 25, 23, 0.04),
-                0 0 0 1px rgba(28, 25, 23, 0.03);
+                0 10px 15px -3px rgba(28, 25, 23, 0.06),
+                0 4px 6px -2px rgba(28, 25, 23, 0.02),
+                0 0 0 1px rgba(28, 25, 23, 0.03); /* Subtle stroke */
             --shadow-float:
-                0 30px 60px -12px rgba(28, 25, 23, 0.22),
-                0 12px 24px -8px rgba(28, 25, 23, 0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+                0 20px 25px -5px rgba(28, 25, 23, 0.1),
+                0 10px 10px -5px rgba(28, 25, 23, 0.04),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            --shadow-depth:
+                0 25px 50px -12px rgba(28, 25, 23, 0.25);
             --shadow-emerald:
-                0 15px 35px -5px rgba(5, 150, 105, 0.25),
-                0 8px 15px -5px rgba(5, 150, 105, 0.15);
-            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
+                0 10px 15px -3px rgba(5, 150, 105, 0.2),
+                0 4px 6px -2px rgba(5, 150, 105, 0.1);
 
-            /* Animations */
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); /* Sharper stop */
-            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.15); /* Less bounce */
-            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* Snappy Spring */
+            /* Refined Easings */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-            /* Radius */
+            /* Radius System */
             --radius-md: 0.75rem;
             --radius-lg: 1rem;
             --radius-xl: 1.5rem;
-            --radius-2xl: 2.5rem; /* Larger corners */
+            --radius-2xl: 2rem;
             --radius-full: 9999px;
         }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-main);
-            background-image: var(--bg-texture); /* Subtle grain */
+            background-image: var(--bg-texture);
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow: hidden;
-            line-height: 1.6;
-            letter-spacing: -0.015em; /* Slightly tighter body text */
+            line-height: 1.65; /* slightly airier */
+            letter-spacing: -0.015em;
+        }
+
+        /* Shimmer Loading Effect */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #f7f7f7 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
         }
 
         h1, h2, h3, h4, .serif {
@@ -144,25 +160,42 @@
             to { opacity: 1; transform: translate(-50%, 0); }
         }
 
+        /* Dynamic Island Toast */
+        @keyframes toastEnter {
+            0% { opacity: 0; transform: translate(-50%, 20px) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+        }
         .toast-notification {
             position: fixed;
-            bottom: 32px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            background: #1C1917;
+            background: rgba(28, 25, 23, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             color: white;
-            padding: 14px 28px;
+            padding: 12px 24px 12px 20px;
             border-radius: 9999px;
-            font-size: 0.9375rem;
+            font-size: 0.95rem;
             font-weight: 500;
             letter-spacing: 0.01em;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+            box-shadow:
+                0 20px 40px -10px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.1);
             z-index: 3000;
             display: flex;
             align-items: center;
-            gap: 12px;
-            animation: toastSlideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            gap: 10px;
+            animation: toastEnter 0.6s var(--ease-spring);
         }
+
+        /* Global Button Active State */
+        button:active {
+            transform: scale(0.96);
+        }
+        /* Fix specific buttons that shouldn't scale or have custom scales */
+        .location-item button.add-sidebar-btn:active { transform: scale(0.92); }
+        .filter-btn:active { transform: scale(0.96); }
 
         /* --- Sidebar & Location List --- */
         .sidebar {
@@ -178,46 +211,49 @@
 
         /* Custom Scrollbar for Sidebar - Ultra Minimal */
         .sidebar *::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
         }
         .sidebar *::-webkit-scrollbar-track {
             background: transparent;
         }
         .sidebar *::-webkit-scrollbar-thumb {
-            background-color: #D6D3D1;
+            background-color: rgba(0,0,0,0.1);
             border-radius: 99px;
+            border: 2px solid transparent;
+            background-clip: content-box;
         }
         .sidebar *::-webkit-scrollbar-thumb:hover {
-            background-color: #A8A29E;
+            background-color: rgba(0,0,0,0.2);
         }
 
         .location-item {
             background: white;
-            border: 1px solid transparent; /* Prepare for hover border */
+            border: 1px solid rgba(0,0,0,0.02);
             box-shadow: var(--shadow-soft);
             border-radius: var(--radius-xl);
-            transition: all 0.5s var(--ease-out-expo);
-            margin-bottom: 1.5rem; /* More breathing room */
+            transition: all 0.4s var(--ease-out-expo);
+            margin-bottom: 1.5rem;
             position: relative;
-            overflow: hidden; /* For image zoom */
+            overflow: hidden;
             transform-style: preserve-3d;
             perspective: 1000px;
             cursor: pointer;
+            will-change: transform, box-shadow;
         }
 
         /* Desktop Tactile Hover State */
         @media (hover: hover) {
             .location-item:hover {
-                transform: translateY(-6px) scale(1.02);
+                transform: translateY(-4px) scale(1.005);
                 box-shadow: var(--shadow-float);
-                border-color: rgba(0,0,0,0.02);
+                border-color: transparent;
                 z-index: 10;
             }
             /* Internal subtle lift for text container */
             .location-item:hover > div:last-child {
-                transform: translateX(4px);
+                transform: translateX(2px);
             }
+            /* Image Zoom handled by group-hover in HTML */
         }
 
         .location-item:focus-visible {
@@ -289,14 +325,18 @@
         /* --- Custom Marker & Popup --- */
         .custom-marker-container {
             position: relative;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
         }
         .marker-circle {
-            transition: all 0.4s var(--ease-elastic);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.5s var(--ease-elastic);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: white;
         }
         .custom-marker-container:hover .marker-circle {
              transform: scale(1.15) translateY(-4px);
-             box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+             box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+             border-color: var(--accent-primary);
+             color: var(--accent-primary);
         }
 
         /* Pulse for active/highlighted markers */
@@ -305,8 +345,22 @@
             background-color: var(--text-primary);
             color: white;
             border-color: var(--text-primary);
-            transform: scale(1.15) translateY(-5px);
-            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.4);
+            transform: scale(1.2) translateY(-6px);
+            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.3);
+        }
+        /* Multi-layered Organic Pulse */
+        .custom-marker-container.active-marker::before,
+        .custom-marker-container.marker-highlight::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            opacity: 0.4;
+            animation: markerPulseInner 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            z-index: -1;
         }
         .custom-marker-container.active-marker::after,
         .custom-marker-container.marker-highlight::after {
@@ -317,36 +371,46 @@
             width: 100%; height: 100%;
             border-radius: 50%;
             background: var(--accent-primary);
-            animation: markerPulseOrganic 2.5s infinite; /* Slower, more organic */
-            z-index: -1;
+            animation: markerPulseOuter 2s infinite cubic-bezier(0, 0, 0.2, 1);
+            animation-delay: 0.4s;
+            z-index: -2;
+            opacity: 0;
         }
-        @keyframes markerPulseOrganic {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-            50% { opacity: 0.3; }
-            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+
+        @keyframes markerPulseInner {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+        @keyframes markerPulseOuter {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
         }
 
         /* Marker Badge */
         .marker-badge {
             position: absolute;
-            top: -5px; right: -5px;
-            width: 12px; height: 12px;
+            top: -6px; right: -6px;
+            width: 14px; height: 14px;
             background: var(--accent-secondary);
             border: 2px solid white;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            animation: bounceIn 0.4s var(--ease-elastic);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            animation: bounceIn 0.5s var(--ease-elastic);
+            z-index: 10;
         }
 
+        /* Glassmorphism Popup - Refined */
         .modern-popup .leaflet-popup-content-wrapper {
             padding: 0;
             overflow: hidden;
-            border-radius: 1.25rem; /* Slightly tighter radius for popup */
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.25);
-            background: rgba(255, 255, 255, 0.95); /* More solid for readability */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 1.5rem; /* Smoother corner */
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(255,255,255,0.4) inset;
+            background: rgba(255, 255, 255, 0.85); /* Slightly clearer */
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: none;
         }
         .modern-popup .leaflet-popup-content {
             margin: 0;
@@ -420,18 +484,20 @@
                 width: 100%;
 
                 border-right: none;
-                border-top: 1px solid rgba(255,255,255,0.4);
-                border-radius: 2.5rem 2.5rem 0 0; /* Ultra rounded top */
+                border-top: 1px solid rgba(255,255,255,0.6);
+                border-radius: 2rem 2rem 0 0; /* Refined radius */
 
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(25px); /* Heavier blur for depth */
-                -webkit-backdrop-filter: blur(25px);
-                box-shadow: 0 -15px 50px rgba(0,0,0,0.12);
+                background: rgba(255, 255, 255, 0.92); /* Slightly more translucent */
+                backdrop-filter: blur(20px) saturate(180%); /* Richer blur */
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                box-shadow:
+                    0 -10px 40px rgba(0,0,0,0.1),
+                    0 -2px 10px rgba(0,0,0,0.03);
 
                 z-index: 1000;
 
                 /* Transition for snapping */
-                transition: transform 0.7s var(--ease-spring); /* Springier feel */
+                transition: transform 0.6s var(--ease-spring);
                 transform: translateY(calc(100% - 40vh)); /* Initial state: Peek */
                 transform: translateY(calc(100% - 40dvh));
                 will-change: transform;
@@ -446,28 +512,28 @@
                 position: sticky;
                 top: 0;
                 z-index: 20;
-                background: rgba(255,255,255,0.92);
+                background: rgba(255,255,255,0.85); /* Glassier */
                 backdrop-filter: blur(15px);
                 -webkit-backdrop-filter: blur(15px);
-                padding: 1.75rem 1.5rem 1.25rem; /* More generous padding */
-                border-radius: 2.5rem 2.5rem 0 0;
-                border-bottom: 1px solid rgba(0,0,0,0.03);
+                padding: 1.5rem 1.5rem 1rem;
+                border-radius: 2rem 2rem 0 0;
+                border-bottom: 1px solid rgba(0,0,0,0.04);
             }
 
             /* Drag Handle Visual - Pill style */
             .sidebar::after {
                 content: '';
                 position: absolute;
-                top: 12px;
+                top: 10px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 48px; /* Wider handle */
-                height: 6px; /* Thicker handle */
-                background-color: #E7E5E4;
+                width: 40px;
+                height: 5px;
+                background-color: #D6D3D1; /* Slightly darker */
                 border-radius: 100px;
                 z-index: 30;
                 pointer-events: none;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                box-shadow: 0 1px 1px rgba(255,255,255,0.5); /* Inner light */
             }
 
             .mobile-toggle { display: none !important; }
@@ -540,31 +606,34 @@
 
             /* Mobile Typography Hyper-Optimization */
             .location-item h3 {
-                font-size: 1.25rem !important; /* Significantly larger title */
+                font-size: 1.15rem !important; /* Balanced */
                 font-weight: 600 !important;
                 letter-spacing: -0.02em;
                 margin-bottom: 0.25rem;
+                color: var(--text-primary);
             }
 
             .location-item p {
-                font-size: 0.9375rem !important; /* Larger body text */
+                font-size: 0.95rem !important;
                 line-height: 1.5 !important;
                 color: var(--text-secondary);
+                font-weight: 400;
             }
 
             /* Mobile Add Button - Tactile */
             .location-item button.add-sidebar-btn {
-                width: 3.5rem !important; /* Huge touch target */
-                height: 3.5rem !important;
-                background-color: transparent;
-                border: 1px solid var(--border-subtle);
+                width: 3rem !important; /* Good touch target */
+                height: 3rem !important;
+                background-color: rgba(0,0,0,0.03); /* Subtle background */
+                border: 1px solid transparent;
                 color: var(--text-primary);
-                margin-left: -0.5rem; /* Align visual center */
+                margin-left: -0.25rem;
+                border-radius: 50% !important;
             }
             .location-item button.add-sidebar-btn:active {
+                transform: scale(0.92);
                 background-color: var(--text-primary);
                 color: white;
-                border-color: var(--text-primary);
             }
 
             /* Itinerary Panel on Mobile */
@@ -1352,8 +1421,8 @@
                 item.dataset.id = loc.id;
                 item.style.animationDelay = `${index * 50}ms`;
                 item.innerHTML = `
-                    <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500 bg-stone-200">
-                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0')">
+                    <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500 bg-stone-200 skeleton-shimmer">
+                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');">
                         <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
                     </div>
                     <div class="flex-grow min-w-0 flex flex-col h-28 justify-between py-0.5">
