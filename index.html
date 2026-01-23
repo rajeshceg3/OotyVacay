@@ -25,12 +25,15 @@
         /* --- Base & Typography --- */
         :root {
             /* Refined Stone Palette - Premium & Warm */
-            --bg-main: #FAFAF9; /* Stone 50 - Very light warm gray */
+            --bg-main: #FDFCFB; /* Ultra light warm gray */
             --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
             --bg-surface: #FFFFFF;
-            --text-primary: #1C1917; /* Stone 900 - Warm Black */
-            --text-secondary: #57534E; /* Stone 600 - Warm Grey */
-            --text-light: #A8A29E; /* Stone 400 */
+            --text-primary: #111827; /* Cool Black */
+            --text-secondary: #4B5563; /* Cool Grey */
+            --text-light: #9CA3AF; /* Gray 400 */
+
+            --shadow-premium: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --glass-surface: rgba(255, 255, 255, 0.7);
 
             /* Luxurious Emerald - Jewel-toned & High Contrast */
             --accent-primary: #059669; /* Emerald 600 */
@@ -211,7 +214,7 @@
 
         /* Custom Scrollbar for Sidebar - Ultra Minimal */
         .sidebar *::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
         .sidebar *::-webkit-scrollbar-track {
             background: transparent;
@@ -228,7 +231,7 @@
 
         .location-item {
             background: white;
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.04);
             box-shadow: var(--shadow-soft);
             border-radius: var(--radius-xl);
             transition: all 0.4s var(--ease-out-expo);
@@ -244,9 +247,9 @@
         /* Desktop Tactile Hover State */
         @media (hover: hover) {
             .location-item:hover {
-                transform: translateY(-4px) scale(1.005);
-                box-shadow: var(--shadow-float);
-                border-color: transparent;
+                transform: translateY(-4px) scale(1.01);
+                box-shadow: var(--shadow-premium);
+                border-color: var(--accent-primary);
                 z-index: 10;
             }
             /* Internal subtle lift for text container */
@@ -485,7 +488,7 @@
 
                 border-right: none;
                 border-top: 1px solid rgba(255,255,255,0.6);
-                border-radius: 2rem 2rem 0 0; /* Refined radius */
+                border-radius: 32px 32px 0 0; /* Refined radius */
 
                 background: rgba(255, 255, 255, 0.92); /* Slightly more translucent */
                 backdrop-filter: blur(20px) saturate(180%); /* Richer blur */
@@ -516,7 +519,7 @@
                 backdrop-filter: blur(15px);
                 -webkit-backdrop-filter: blur(15px);
                 padding: 1.5rem 1.5rem 1rem;
-                border-radius: 2rem 2rem 0 0;
+                border-radius: 32px 32px 0 0;
                 border-bottom: 1px solid rgba(0,0,0,0.04);
             }
 
@@ -713,7 +716,7 @@
                 0 0 0 1px rgba(255, 255, 255, 0.5) inset,
                 0 50px 100px -20px rgba(0, 0, 0, 0.5); /* Deep shadow */
             position: relative;
-            transform: scale(0.92) translateY(30px) rotateX(5deg); /* Slight 3D entry */
+            transform: scale(0.95) translateY(40px) rotateX(10deg); /* High-end 3D entry */
             opacity: 0;
             transition: transform 0.6s var(--ease-spring), opacity 0.4s ease;
             transform-origin: center bottom;
@@ -833,7 +836,7 @@
         /* Mobile FAB */
         .mobile-fab {
             position: fixed;
-            bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+            bottom: calc(32px + env(safe-area-inset-bottom, 20px));
             right: 24px;
             z-index: 1500;
             background: linear-gradient(135deg, #1C1917, #000000);
@@ -1615,6 +1618,7 @@
                 const header = sidebar.firstElementChild;
                 let startY = 0;
                 let currentY = 0;
+                let startTime = 0;
                 let isDragging = false;
                 let currentSheetState = 'half'; // 'half' or 'full'
 
@@ -1683,6 +1687,7 @@
 
                     isDragging = true;
                     startY = e.touches[0].clientY;
+                    startTime = Date.now();
 
                     // Get current transform value
                     const style = window.getComputedStyle(sidebar);
@@ -1704,9 +1709,9 @@
                     const minTransform = 0; // Fully expanded
                     const maxTransform = calculateTransform(halfHeight); // Half state
 
-                    // Resistance at bounds
-                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.2;
-                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.2;
+                    // Resistance at bounds (Stiffer rubber band)
+                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.15;
+                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.15;
 
                     updateSheetPosition(newY);
                 }, { passive: false });
@@ -1716,24 +1721,26 @@
                     isDragging = false;
 
                     const movedY = e.changedTouches[0].clientY - startY;
+                    const dt = Date.now() - startTime;
+                    const velocity = Math.abs(movedY / dt); // px/ms
+
                     const sheetHeight = getSheetHeight();
                     const halfHeight = getHalfHeight();
                     const threshold = 50; // px to trigger snap
+                    const velocityThreshold = 0.5;
 
                     // Logic to determine snap
-                    // currentY is starting position
-                    // movedY is delta
                     // dragging UP (negative delta) -> wants Full
                     // dragging DOWN (positive delta) -> wants Half
 
                     if (currentSheetState === 'half') {
-                        if (movedY < -threshold) {
+                        if (movedY < -threshold || (movedY < -10 && velocity > velocityThreshold)) {
                             snapToState('full');
                         } else {
                             snapToState('half');
                         }
                     } else { // full
-                        if (movedY > threshold) {
+                        if (movedY > threshold || (movedY > 10 && velocity > velocityThreshold)) {
                             snapToState('half');
                         } else {
                             snapToState('full');
