@@ -32,8 +32,9 @@
             --text-secondary: #4B5563; /* Cool Grey */
             --text-light: #9CA3AF; /* Gray 400 */
 
-            --shadow-premium: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --glass-surface: rgba(255, 255, 255, 0.7);
+            --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --glass-surface: rgba(255, 255, 255, 0.75);
+            --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 
             /* Luxurious Emerald - Jewel-toned & High Contrast */
             --accent-primary: #059669; /* Emerald 600 */
@@ -100,7 +101,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow: hidden;
-            line-height: 1.65; /* slightly airier */
+            line-height: 1.75; /* slightly airier */
             letter-spacing: -0.015em;
         }
 
@@ -122,7 +123,7 @@
         }
 
         /* Fluid Typography */
-        .sidebar h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1.05; }
+        .sidebar h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.035em; }
 
         /* --- Layout --- */
         .main-layout {
@@ -269,7 +270,7 @@
         /* Desktop Tactile Hover State */
         @media (hover: hover) {
             .location-item:hover {
-                transform: translateY(-4px) scale(1.005);
+                transform: translateY(-6px) scale(1.005);
                 box-shadow: var(--shadow-premium), var(--shadow-emerald-glow);
                 border-color: var(--accent-primary);
                 z-index: 10;
@@ -449,8 +450,8 @@
                 0 25px 50px -12px rgba(0, 0, 0, 0.35),
                 0 0 0 1px rgba(255,255,255,0.4) inset;
             background: rgba(255, 255, 255, 0.85); /* Slightly clearer */
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
             border: none;
         }
         .modern-popup .leaflet-popup-content {
@@ -877,7 +878,7 @@
         /* Mobile FAB */
         .mobile-fab {
             position: fixed;
-            bottom: calc(32px + env(safe-area-inset-bottom, 20px));
+            bottom: calc(40px + env(safe-area-inset-bottom, 20px));
             right: 24px;
             z-index: 1500;
             background: linear-gradient(135deg, #1C1917, #000000);
@@ -1185,8 +1186,8 @@
                 flyingEl.style.position = 'fixed';
                 flyingEl.style.zIndex = '9999';
                 flyingEl.style.pointerEvents = 'none';
-                // More dramatic curve (Ballistic Arc)
-                flyingEl.style.transition = 'top 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19), left 0.8s cubic-bezier(0.215, 0.61, 0.355, 1), transform 0.8s ease-in';
+                // Energetic Spring Motion
+                flyingEl.style.transition = 'top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.8s ease-in';
 
                 flyingEl.style.background = 'var(--accent-primary)';
                 flyingEl.style.borderRadius = '50%';
@@ -1503,9 +1504,9 @@
                             const mapHeight = map.getSize().y;
                             // Sheet takes ~40% in half state. Visible area is top 60%.
                             // Center of visible area is 30%. Map center is 50%.
-                            // Shift needed: 20% of height.
+                            // Shift needed: 30% of height.
                             // We need to shift the target Center DOWN (so the map moves up)
-                            const offset = mapHeight * 0.20;
+                            const offset = mapHeight * 0.30;
 
                             const point = map.project([loc.lat, loc.lng], targetZoom);
                             const targetPoint = point.add([0, offset]);
@@ -1751,8 +1752,8 @@
                     const maxTransform = calculateTransform(halfHeight); // Half state
 
                     // Resistance at bounds (Stiffer rubber band)
-                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.12;
-                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.12;
+                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.20;
+                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.20;
 
                     updateSheetPosition(newY);
                 }, { passive: false });
