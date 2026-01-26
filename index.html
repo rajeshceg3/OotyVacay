@@ -25,19 +25,20 @@
         /* --- Base & Typography --- */
         :root {
             /* Refined Stone Palette - Premium & Warm */
-            --bg-main: #FDFCFB; /* Ultra light warm gray */
-            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+            --bg-main: #FAFAF9; /* Stone 50 - Warmer */
+            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
             --bg-surface: #FFFFFF;
-            --text-primary: #111827; /* Cool Black */
-            --text-secondary: #4B5563; /* Cool Grey */
-            --text-light: #9CA3AF; /* Gray 400 */
+            --text-primary: #0C0A09; /* Stone 950 */
+            --text-secondary: #44403C; /* Stone 700 */
+            --text-light: #A8A29E; /* Stone 400 */
 
             --shadow-premium: 0 25px 50px -12px rgba(28, 25, 23, 0.35);
-            --glass-surface: rgba(255, 255, 255, 0.75);
+            --glass-surface: rgba(255, 255, 255, 0.65); /* More translucent */
+            --glass-blur: blur(20px) saturate(180%);
             --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 
-            /* Luxurious Emerald - Jewel-toned & High Contrast */
-            --accent-primary: #059669; /* Emerald 600 */
+            /* Luxurious Emerald - Deep & Rich */
+            --accent-primary: #059669; /* Emerald 600 - Keeping base, but darkening logic handled in classes */
             --accent-primary-hover: #047857; /* Emerald 700 */
             --accent-primary-light: #ECFDF5; /* Emerald 50 */
             --accent-primary-rgb: 5, 150, 105;
@@ -87,6 +88,21 @@
             --radius-full: 9999px;
         }
 
+        /* Colored Shadow Utility */
+        .colored-shadow {
+            position: relative;
+        }
+        .colored-shadow::after {
+            content: '';
+            position: absolute;
+            top: 10px; left: 0; right: 0; bottom: 0;
+            background: inherit;
+            filter: blur(25px);
+            opacity: 0.4;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-main);
@@ -118,12 +134,12 @@
 
         h1, h2, h3, h4, .serif {
             font-family: 'Lora', serif;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.02em;
             font-weight: 600;
         }
 
         /* Fluid Typography */
-        .sidebar h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.04em; }
+        .sidebar h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.0; letter-spacing: -0.05em; }
 
         /* --- Layout --- */
         .main-layout {
@@ -222,11 +238,13 @@
         /* --- Sidebar & Location List --- */
         .sidebar {
             background: var(--bg-surface);
-            border-right: 1px solid var(--border-subtle);
+            border-right: none;
             display: flex;
             flex-direction: column;
             z-index: 500;
-            box-shadow: 20px 0 50px -20px rgba(0,0,0,0.08);
+            box-shadow:
+                20px 0 50px -20px rgba(0,0,0,0.08),
+                5px 0 15px -5px rgba(0,0,0,0.03); /* Layered shadow for depth */
             /* Ensure smooth transforms for mobile sheet */
             transition: transform 0.6s var(--ease-out-expo);
         }
@@ -315,29 +333,28 @@
 
         /* --- Filter Buttons --- */
         .filter-btn {
-            transition: all 0.3s var(--ease-smooth);
-            border: 1px solid transparent;
+            transition: color 0.3s var(--ease-smooth);
+            border: none;
             color: var(--text-secondary);
-            background: rgba(0,0,0,0.03);
+            background: transparent; /* Background handled by pill */
             letter-spacing: -0.01em;
             position: relative;
-            overflow: hidden;
         }
         @media (hover: hover) {
             .filter-btn:hover {
-                background: rgba(0,0,0,0.06);
                 color: var(--text-primary);
-                transform: translateY(-1px);
             }
         }
         .filter-btn.active {
-            background-color: var(--text-primary);
-            color: white;
-            box-shadow: 0 4px 12px -2px rgba(0,0,0,0.3);
-            transform: translateY(0);
+            color: white; /* Contrast against dark pill */
         }
         .filter-btn:active {
             transform: scale(0.96);
+        }
+
+        #filter-pill {
+            background-color: var(--text-primary);
+            box-shadow: 0 4px 12px -2px rgba(0,0,0,0.3);
         }
 
         /* --- Itinerary Panel --- */
@@ -935,6 +952,23 @@
             opacity: 0;
             pointer-events: none;
         }
+        /* FAB Ripple Effect */
+        .mobile-fab::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            border: 2px solid rgba(255,255,255,0.4);
+            opacity: 0;
+            transform: scale(1);
+        }
+        .mobile-fab:active::after {
+            animation: fabRipple 0.4s ease-out;
+        }
+        @keyframes fabRipple {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
         .fab-badge {
             position: absolute;
             top: -2px;
@@ -957,6 +991,32 @@
             mask-image: linear-gradient(to right, black 85%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
         }
+
+        /* Routing Machine Customization */
+        .leaflet-routing-container {
+            background-color: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-radius: 1.5rem !important;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.5) !important;
+            padding: 1.5rem !important;
+            font-family: 'Inter', sans-serif !important;
+            width: 340px !important;
+            max-width: 90vw;
+            transition: all 0.3s ease;
+        }
+        .leaflet-routing-container h2 {
+            font-size: 1.25rem;
+            font-family: 'Lora', serif;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        .leaflet-routing-alt {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        /* Hide default header/collapse if ugly, but standard is okay with glass */
     </style>
 </head>
 <body>
@@ -996,11 +1056,12 @@
                     </button>
                 </div>
 
-                <div id="filter-container" class="flex space-x-3 overflow-x-auto pb-6 scrollbar-hide pt-2 mask-linear-fade" role="tablist">
-                    <button data-filter="all" class="filter-btn active px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap" role="tab" aria-selected="true">All Places</button>
-                    <button data-filter="garden" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap" role="tab" aria-selected="false">Gardens</button>
-                    <button data-filter="lake" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap" role="tab" aria-selected="false">Lakes</button>
-                    <button data-filter="viewpoint" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap" role="tab" aria-selected="false">Viewpoints</button>
+                <div id="filter-container" class="relative flex space-x-1 overflow-x-auto pb-6 scrollbar-hide pt-2 mask-linear-fade p-1" role="tablist">
+                    <div id="filter-pill" class="absolute top-2 bottom-6 bg-stone-900 rounded-full transition-all duration-300 ease-spring shadow-lg opacity-0"></div>
+                    <button data-filter="all" class="filter-btn active px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap z-10" role="tab" aria-selected="true">All Places</button>
+                    <button data-filter="garden" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap z-10" role="tab" aria-selected="false">Gardens</button>
+                    <button data-filter="lake" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap z-10" role="tab" aria-selected="false">Lakes</button>
+                    <button data-filter="viewpoint" class="filter-btn px-5 py-2.5 text-sm font-medium rounded-full whitespace-nowrap z-10" role="tab" aria-selected="false">Viewpoints</button>
                 </div>
             </div>
 
@@ -1259,8 +1320,13 @@
                 }, 800);
             };
 
+            const pulseHaptic = () => {
+                if (navigator.vibrate) navigator.vibrate(10);
+            };
+
             const addToItinerary = (id, startEl = null) => {
                 if (!itinerary.includes(id)) {
+                    pulseHaptic();
                     itinerary.push(id);
                     renderItinerary();
                     saveItinerary();
@@ -1334,12 +1400,74 @@
             };
 
             // --- Event Listeners ---
+            // Filter Pill Logic
+            const filterPill = document.getElementById('filter-pill');
+            const updateFilterPill = () => {
+                const activeBtn = document.querySelector('.filter-btn.active');
+                if (activeBtn && filterPill) {
+                    const containerRect = filterContainer.getBoundingClientRect();
+                    const btnRect = activeBtn.getBoundingClientRect();
+
+                    filterPill.style.width = `${btnRect.width}px`;
+                    filterPill.style.height = `${btnRect.height}px`;
+                    // Calculate relative left/top based on container scroll/position
+                    filterPill.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+                    filterPill.style.opacity = '1';
+                }
+            };
+
+            // Initialize Pill
+            // Wait a tick for layout
+            setTimeout(updateFilterPill, 100);
+            window.addEventListener('resize', updateFilterPill);
+
             filterContainer.addEventListener('click', (e) => {
                 const filterButton = e.target.closest('.filter-btn');
                 if (filterButton) {
                     filterLocations(filterButton.dataset.filter);
+                    // Update Pill
+                    setTimeout(updateFilterPill, 0); // Next tick after active class toggle
                 }
             });
+
+            // Magnetic Button Logic (Desktop Only)
+            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                const initMagneticButtons = () => {
+                    const magneticBtns = document.querySelectorAll('.add-sidebar-btn:not([data-magnetic-init]), .filter-btn:not([data-magnetic-init])');
+                    magneticBtns.forEach(btn => {
+                        btn.setAttribute('data-magnetic-init', 'true');
+                        btn.addEventListener('mousemove', (e) => {
+                            const rect = btn.getBoundingClientRect();
+                            const x = e.clientX - rect.left - rect.width / 2;
+                            const y = e.clientY - rect.top - rect.height / 2;
+
+                            // Magnetic strength
+                            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                        });
+
+                        btn.addEventListener('mouseleave', () => {
+                            btn.style.transform = '';
+                        });
+                    });
+                };
+
+                // Init on load
+                initMagneticButtons();
+
+                // Re-init when DOM changes (renderItinerary/locations) involves adding buttons
+                const observer = new MutationObserver((mutations) => {
+                    // optimization: check if any addedNodes
+                    let hasNodes = false;
+                    for (const mutation of mutations) {
+                        if (mutation.addedNodes.length > 0) {
+                            hasNodes = true;
+                            break;
+                        }
+                    }
+                    if (hasNodes) initMagneticButtons();
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
+            }
             clearItineraryBtn.addEventListener('click', () => {
                 itinerary = [];
                 // itineraryListEl.innerHTML = ''; // Clear visually immediately - handled by renderItinerary
@@ -1568,15 +1696,28 @@
                 locationListEl.appendChild(item);
 
                 // Add marker to map
+                // Initial state: scaled down
                 const markerHtml = `
                     <div class="custom-marker-container group">
-                         <div class="marker-circle bg-white text-emerald-700 rounded-full p-2 shadow-xl border-2 border-white flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-2 group-hover:bg-emerald-700 group-hover:text-white group-hover:border-emerald-800">
+                         <div class="marker-circle bg-white text-emerald-700 rounded-full p-2 shadow-xl border-2 border-white flex items-center justify-center transform transition-all duration-500 var(--ease-elastic) group-hover:scale-110 group-hover:-translate-y-2 group-hover:bg-emerald-700 group-hover:text-white group-hover:border-emerald-800" style="transform: scale(0) translateY(20px); opacity: 0;">
                             ${icons[loc.type] || icons['historical']}
                         </div>
                     </div>
                 `;
                 const customIcon = L.divIcon({ html: markerHtml, className: '', iconSize: [48, 48], iconAnchor: [24, 24], popupAnchor: [0, -28] });
                 const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
+
+                // Animate In Staggered
+                setTimeout(() => {
+                    const iconEl = marker.getElement();
+                    if (iconEl) {
+                        const circle = iconEl.querySelector('.marker-circle');
+                        if (circle) {
+                            circle.style.transform = ''; // Clear inline transform to let CSS take over (or set scale(1))
+                            circle.style.opacity = '1';
+                        }
+                    }
+                }, 200 + (index * 100)); // Base delay + stagger
 
                 // Bi-directional Hover Highlighting
                 // 1. List Item -> Map Marker
@@ -1715,6 +1856,9 @@
                         targetY = calculateTransform(halfHeight);
                     }
 
+                    // Haptic feedback on snap
+                    if (currentSheetState !== state) pulseHaptic();
+
                     sidebar.classList.remove('dragging');
                     updateSheetPosition(targetY);
                     currentSheetState = state;
@@ -1778,9 +1922,16 @@
                     const minTransform = 0; // Fully expanded
                     const maxTransform = calculateTransform(halfHeight); // Half state
 
-                    // Resistance at bounds (Stiffer rubber band)
-                    if (newY < minTransform) newY = minTransform - (minTransform - newY) * 0.20;
-                    if (newY > maxTransform) newY = maxTransform + (newY - maxTransform) * 0.20;
+                    // Resistance at bounds (Stiffer rubber band - iOS feel)
+                    // Logarithmic decay for resistance
+                    if (newY < minTransform) {
+                         const overscroll = minTransform - newY;
+                         newY = minTransform - (10 * Math.log(overscroll + 1));
+                    }
+                    if (newY > maxTransform) {
+                        const overscroll = newY - maxTransform;
+                        newY = maxTransform + (10 * Math.log(overscroll + 1));
+                    }
 
                     updateSheetPosition(newY);
                 }, { passive: false });
@@ -1795,8 +1946,8 @@
 
                     const sheetHeight = getSheetHeight();
                     const halfHeight = getHalfHeight();
-                    const threshold = 80; // px to trigger snap
-                    const velocityThreshold = 0.45;
+                    const threshold = 60; // Lower threshold for snappier feel
+                    const velocityThreshold = 0.3; // More sensitive flick
 
                     // Logic to determine snap
                     // dragging UP (negative delta) -> wants Full
