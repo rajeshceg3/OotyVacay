@@ -32,7 +32,7 @@
             --text-secondary: #4B5563; /* Cool Grey */
             --text-light: #9CA3AF; /* Gray 400 */
 
-            --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-premium: 0 25px 50px -12px rgba(28, 25, 23, 0.35);
             --glass-surface: rgba(255, 255, 255, 0.75);
             --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 
@@ -118,12 +118,12 @@
 
         h1, h2, h3, h4, .serif {
             font-family: 'Lora', serif;
-            letter-spacing: -0.02em;
-            font-weight: 500;
+            letter-spacing: -0.025em;
+            font-weight: 600;
         }
 
         /* Fluid Typography */
-        .sidebar h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.035em; }
+        .sidebar h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.04em; }
 
         /* --- Layout --- */
         .main-layout {
@@ -144,6 +144,11 @@
             width: 100%;
             background-color: #E5E5E5;
             z-index: 0;
+        }
+
+        /* Cinematic Map Tone */
+        .leaflet-tile-pane {
+            filter: saturate(0.85) sepia(0.05) contrast(1.1);
         }
 
         /* --- Animations & Transitions --- */
@@ -224,6 +229,11 @@
             box-shadow: 20px 0 50px -20px rgba(0,0,0,0.08);
             /* Ensure smooth transforms for mobile sheet */
             transition: transform 0.6s var(--ease-out-expo);
+        }
+
+        #location-list {
+            mask-image: linear-gradient(to bottom, black 96%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 96%, transparent 100%);
         }
 
         /* Custom Scrollbar for Sidebar - Ultra Minimal */
@@ -313,10 +323,12 @@
             position: relative;
             overflow: hidden;
         }
-        .filter-btn:hover {
-            background: rgba(0,0,0,0.06);
-            color: var(--text-primary);
-            transform: translateY(-1px);
+        @media (hover: hover) {
+            .filter-btn:hover {
+                background: rgba(0,0,0,0.06);
+                color: var(--text-primary);
+                transform: translateY(-1px);
+            }
         }
         .filter-btn.active {
             background-color: var(--text-primary);
@@ -447,11 +459,11 @@
             overflow: hidden;
             border-radius: 1.5rem; /* Smoother corner */
             box-shadow:
-                0 25px 50px -12px rgba(0, 0, 0, 0.35),
-                0 0 0 1px rgba(255,255,255,0.4) inset;
-            background: rgba(255, 255, 255, 0.85); /* Slightly clearer */
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
+                0 25px 50px -12px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(255,255,255,0.6) inset;
+            background: rgba(255, 255, 255, 0.90); /* Richer background */
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
             border: none;
         }
         .modern-popup .leaflet-popup-content {
@@ -487,11 +499,13 @@
             transition: all 0.3s var(--ease-spring) !important;
             border: none !important;
         }
-        .leaflet-control-zoom a:hover {
-            background: white !important;
-            transform: scale(1.1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2), 0 0 20px var(--accent-primary-glow) !important;
-            color: var(--accent-primary) !important;
+        @media (hover: hover) {
+            .leaflet-control-zoom a:hover {
+                background: white !important;
+                transform: scale(1.1);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2), 0 0 20px var(--accent-primary-glow) !important;
+                color: var(--accent-primary) !important;
+            }
         }
         .leaflet-control-zoom a.leaflet-disabled {
             background: rgba(255,255,255,0.6) !important;
@@ -608,6 +622,9 @@
             /* Adjust content padding */
             #location-list {
                 padding: 0 1.5rem calc(160px + env(safe-area-inset-bottom)) 1.5rem !important;
+                /* Soft scroll mask */
+                mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
             }
 
             /* Mobile List Styling (Flat list feeling) */
@@ -812,8 +829,8 @@
             position: absolute;
             top: 1.25rem;
             right: 1.25rem;
-            width: 36px;
-            height: 36px;
+            width: 44px;
+            height: 44px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -858,6 +875,28 @@
         .modal-add-btn:active {
             transform: scale(0.95);
         }
+        /* Hover Sheen */
+        .modal-add-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+        @media (hover: hover) {
+            .modal-add-btn:hover::before {
+                left: 100%;
+            }
+            .modal-add-btn:hover i {
+                transform: translateX(3px) scale(1.1);
+            }
+        }
+        .modal-add-btn i {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
         .modal-add-btn::after {
             content: '';
             position: absolute;
@@ -1169,65 +1208,53 @@
             };
 
             const animateFlyTo = (startEl, targetEl, callback) => {
-                if (!startEl || !targetEl) {
-                    if (callback) callback();
-                    return;
-                }
-
+                if (!startEl || !targetEl) { if (callback) callback(); return; }
                 const startRect = startEl.getBoundingClientRect();
                 const targetRect = targetEl.getBoundingClientRect();
 
-                if (targetRect.width === 0 || targetRect.height === 0) {
-                     if (callback) callback();
-                     return;
-                }
+                if (targetRect.width === 0 || targetRect.height === 0) { if (callback) callback(); return; }
 
-                const flyingEl = document.createElement('div');
-                flyingEl.style.position = 'fixed';
-                flyingEl.style.zIndex = '9999';
-                flyingEl.style.pointerEvents = 'none';
-                // Energetic Spring Motion
-                flyingEl.style.transition = 'top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.8s ease-in';
+                // Wrapper for X-axis motion (Linear/Ease-out)
+                const wrapper = document.createElement('div');
+                Object.assign(wrapper.style, {
+                    position: 'fixed', zIndex: '9999', pointerEvents: 'none',
+                    left: '0', top: '0',
+                    transform: `translate(${startRect.left + startRect.width/2}px, ${startRect.top + startRect.height/2}px)`,
+                    transition: 'transform 0.8s cubic-bezier(0.2, 0, 0.2, 1)'
+                });
 
-                flyingEl.style.background = 'var(--accent-primary)';
-                flyingEl.style.borderRadius = '50%';
-                flyingEl.style.width = '20px';
-                flyingEl.style.height = '20px';
-                flyingEl.style.border = '3px solid white';
-                flyingEl.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+                // Inner for Y-axis motion (Arc/Gravity)
+                const inner = document.createElement('div');
+                Object.assign(inner.style, {
+                    width: '20px', height: '20px', borderRadius: '50%',
+                    background: 'var(--accent-primary)', border: '3px solid white',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+                    transform: 'translate(-50%, -50%)',
+                    transition: 'transform 0.8s cubic-bezier(0.5, 0, 0, 1)' // Gravity pull
+                });
 
-                // Start center of button
-                const startX = startRect.left + startRect.width / 2 - 10;
-                const startY = startRect.top + startRect.height / 2 - 10;
+                wrapper.appendChild(inner);
+                document.body.appendChild(wrapper);
 
-                flyingEl.style.left = `${startX}px`;
-                flyingEl.style.top = `${startY}px`;
+                // Trigger layout
+                wrapper.getBoundingClientRect();
 
-                document.body.appendChild(flyingEl);
+                // Calculate deltas
+                const deltaX = (targetRect.left + targetRect.width/2) - (startRect.left + startRect.width/2);
+                const deltaY = (targetRect.top + targetRect.height/2) - (startRect.top + startRect.height/2);
 
-                // Trigger reflow
-                flyingEl.getBoundingClientRect();
-
-                // End center of target
-                const targetX = targetRect.left + targetRect.width / 2 - 10;
-                const targetY = targetRect.top + targetRect.height / 2 - 10;
-
-                flyingEl.style.left = `${targetX}px`;
-                flyingEl.style.top = `${targetY}px`;
-                flyingEl.style.transform = 'scale(0.2)'; // Shrink more significantly
+                wrapper.style.transform = `translate(${startRect.left + startRect.width/2 + deltaX}px, ${startRect.top + startRect.height/2}px)`;
+                inner.style.transform = `translate(-50%, calc(-50% + ${deltaY}px)) scale(0.2)`;
 
                 setTimeout(() => {
-                    flyingEl.remove();
+                    wrapper.remove();
                     // Add bump animation to target
                     targetEl.animate([
                         { transform: 'scale(1)' },
                         { transform: 'scale(1.35)' },
                         { transform: 'scale(0.95)' },
                         { transform: 'scale(1)' }
-                    ], {
-                        duration: 450,
-                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                    });
+                    ], { duration: 450, easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
                     if (callback) callback();
                 }, 800);
             };
@@ -1504,9 +1531,9 @@
                             const mapHeight = map.getSize().y;
                             // Sheet takes ~40% in half state. Visible area is top 60%.
                             // Center of visible area is 30%. Map center is 50%.
-                            // Shift needed: 30% of height.
-                            // We need to shift the target Center DOWN (so the map moves up)
-                            const offset = mapHeight * 0.30;
+                            // Shift needed: Center is 30% from top (visible area). Map center is 50%.
+                            // Shift down by 20%.
+                            const offset = mapHeight * 0.20;
 
                             const point = map.project([loc.lat, loc.lng], targetZoom);
                             const targetPoint = point.add([0, offset]);
@@ -1768,8 +1795,8 @@
 
                     const sheetHeight = getSheetHeight();
                     const halfHeight = getHalfHeight();
-                    const threshold = 75; // px to trigger snap
-                    const velocityThreshold = 0.35;
+                    const threshold = 80; // px to trigger snap
+                    const velocityThreshold = 0.45;
 
                     // Logic to determine snap
                     // dragging UP (negative delta) -> wants Full
