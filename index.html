@@ -26,19 +26,19 @@
         :root {
             /* Refined Stone Palette - Premium & Warm */
             --bg-main: #FAFAF9; /* Stone 50 - Warmer */
-            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+            --bg-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
             --bg-surface: #FFFFFF;
-            --text-primary: #0C0A09; /* Stone 950 */
+            --text-primary: #1C1917; /* Stone 900 - Slightly softer than pure black */
             --text-secondary: #44403C; /* Stone 700 */
-            --text-light: #A8A29E; /* Stone 400 */
+            --text-light: #78716C; /* Stone 500 - increased contrast */
 
-            --shadow-premium: 0 25px 50px -12px rgba(28, 25, 23, 0.35);
-            --glass-surface: rgba(255, 255, 255, 0.65); /* More translucent */
-            --glass-blur: blur(20px) saturate(180%);
+            --shadow-premium: 0 25px 50px -12px rgba(28, 25, 23, 0.25);
+            --glass-surface: rgba(255, 255, 255, 0.70);
+            --glass-blur: blur(24px) saturate(180%);
             --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
 
             /* Luxurious Emerald - Deep & Rich */
-            --accent-primary: #059669; /* Emerald 600 - Keeping base, but darkening logic handled in classes */
+            --accent-primary: #059669; /* Emerald 600 */
             --accent-primary-hover: #047857; /* Emerald 700 */
             --accent-primary-light: #ECFDF5; /* Emerald 50 */
             --accent-primary-rgb: 5, 150, 105;
@@ -110,7 +110,7 @@
                 var(--bg-texture),
                 radial-gradient(circle at 0% 0%, rgba(236, 253, 245, 0.8) 0%, transparent 40%), /* Top Left Emerald tint */
                 radial-gradient(circle at 100% 100%, rgba(255, 237, 213, 0.6) 0%, transparent 40%), /* Bottom Right Orange tint */
-                linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 100%); /* Subtle wash */
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.02) 100%); /* Central depth */
             background-blend-mode: overlay, normal, normal, normal;
             background-attachment: fixed;
             color: var(--text-primary);
@@ -134,7 +134,7 @@
 
         h1, h2, h3, h4, .serif {
             font-family: 'Lora', serif;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
             font-weight: 600;
         }
 
@@ -254,19 +254,22 @@
             -webkit-mask-image: linear-gradient(to bottom, black 96%, transparent 100%);
         }
 
-        /* Custom Scrollbar for Sidebar - Ultra Minimal */
+        /* Custom Scrollbar for Sidebar - Ultra Minimal Overlay */
         .sidebar *::-webkit-scrollbar {
-            width: 3px;
+            width: 6px; /* Slightly wider for usability but transparent */
         }
         .sidebar *::-webkit-scrollbar-track {
             background: transparent;
         }
         .sidebar *::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.05);
+            background-color: rgba(0,0,0,0); /* Hidden by default */
             border-radius: 99px;
+            border: 2px solid transparent; /* Padding trick */
+            background-clip: content-box;
+            transition: background-color 0.3s ease;
         }
         .sidebar *:hover::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.15);
+            background-color: rgba(0,0,0,0.15); /* Visible on hover */
         }
 
         .location-item {
@@ -284,31 +287,33 @@
             will-change: transform, box-shadow;
         }
 
-        /* Glass Sheen Effect */
+        /* Glass Sheen Effect - Refined */
         .location-item::after {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.4) 50%, transparent 60%);
-            transform: translateX(-100%);
-            transition: transform 0.6s;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
             pointer-events: none;
+            z-index: 20;
         }
 
         /* Desktop Tactile Hover State */
         @media (hover: hover) {
             .location-item:hover {
-                transform: translateY(-6px) scale(1.005);
+                transform: translateY(-8px) scale(1.01); /* More lift */
                 box-shadow: var(--shadow-premium), var(--shadow-emerald-glow);
                 border-color: var(--accent-primary);
                 z-index: 10;
             }
             .location-item:hover::after {
-                transform: translateX(100%);
+                left: 150%;
+                transition: left 0.75s ease-in-out;
             }
             /* Internal subtle lift for text container */
             .location-item:hover > div:last-child {
-                transform: translateX(2px);
+                transform: translateX(4px);
             }
         }
 
@@ -504,23 +509,26 @@
         }
         .leaflet-control-zoom a {
             background: rgba(255, 255, 255, 0.65) !important;
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
             color: var(--text-primary) !important;
-            border-radius: 50% !important; /* Fully round */
-            width: 44px !important;
-            height: 44px !important;
-            line-height: 44px !important;
-            font-size: 20px !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.4) !important;
+            border-radius: 9999px !important; /* Pill/Round */
+            width: 48px !important;
+            height: 48px !important;
+            line-height: 48px !important;
+            font-size: 22px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.4) !important;
             transition: all 0.3s var(--ease-spring) !important;
             border: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         @media (hover: hover) {
             .leaflet-control-zoom a:hover {
                 background: white !important;
-                transform: scale(1.1);
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2), 0 0 20px var(--accent-primary-glow) !important;
+                transform: scale(1.15);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 0 25px var(--accent-primary-glow) !important;
                 color: var(--accent-primary) !important;
             }
         }
@@ -588,11 +596,12 @@
                 top: 0;
                 z-index: 20;
                 background: rgba(255,255,255,0.85); /* Glassier */
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
+                backdrop-filter: blur(20px) saturate(180%);
+                -webkit-backdrop-filter: blur(20px) saturate(180%);
                 padding: 1.5rem 1.5rem 1rem;
                 border-radius: 32px 32px 0 0;
                 border-bottom: 1px solid rgba(0,0,0,0.04);
+                touch-action: none; /* Prevent scroll chaining during drag */
             }
 
             /* Drag Handle Visual - Pill style */
@@ -654,12 +663,12 @@
                 box-shadow: none !important;
                 background: transparent !important;
                 gap: 1.25rem !important;
-                transition: all 0.2s ease;
+                transition: background-color 0.2s ease, transform 0.1s ease;
                 transform: none !important; /* Disable 3D tilt on mobile */
             }
             .location-item:active {
-                background-color: rgba(0,0,0,0.02) !important;
-                transform: scale(0.98) !important;
+                background-color: rgba(0,0,0,0.04) !important;
+                transform: scale(0.96) !important; /* Deeper press */
             }
             .location-item:last-child { border-bottom: none !important; }
 
@@ -1275,23 +1284,23 @@
 
                 if (targetRect.width === 0 || targetRect.height === 0) { if (callback) callback(); return; }
 
-                // Wrapper for X-axis motion (Linear/Ease-out)
+                // Wrapper for X-axis motion (Linear)
                 const wrapper = document.createElement('div');
                 Object.assign(wrapper.style, {
                     position: 'fixed', zIndex: '9999', pointerEvents: 'none',
                     left: '0', top: '0',
                     transform: `translate(${startRect.left + startRect.width/2}px, ${startRect.top + startRect.height/2}px)`,
-                    transition: 'transform 0.8s cubic-bezier(0.2, 0, 0.2, 1)'
+                    transition: 'transform 0.7s linear' // Linear X for parabolic arc
                 });
 
-                // Inner for Y-axis motion (Arc/Gravity)
+                // Inner for Y-axis motion (Quadratic)
                 const inner = document.createElement('div');
                 Object.assign(inner.style, {
-                    width: '20px', height: '20px', borderRadius: '50%',
+                    width: '24px', height: '24px', borderRadius: '50%',
                     background: 'var(--accent-primary)', border: '3px solid white',
                     boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
                     transform: 'translate(-50%, -50%)',
-                    transition: 'transform 0.8s cubic-bezier(0.5, 0, 0, 1)' // Gravity pull
+                    transition: 'transform 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53)' // Quadratic-ish
                 });
 
                 wrapper.appendChild(inner);
@@ -1441,8 +1450,8 @@
                             const x = e.clientX - rect.left - rect.width / 2;
                             const y = e.clientY - rect.top - rect.height / 2;
 
-                            // Magnetic strength
-                            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                            // Magnetic strength - Tuned for subtlety
+                            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
                         });
 
                         btn.addEventListener('mouseleave', () => {
@@ -1536,7 +1545,7 @@
                 content.className = 'flex flex-col h-full';
                 content.innerHTML = `
                     <div class="relative h-72 w-full modal-stagger group flex-shrink-0">
-                        <img src="${location.image}" alt="${location.title}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+                        <img src="${location.image}" alt="${location.title}" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent"></div>
                         <div class="absolute bottom-6 left-8 right-6 text-left">
                             <div class="emoji-icon text-5xl mb-4 drop-shadow-xl origin-left inline-block">${location.emoji}</div>
@@ -1622,7 +1631,7 @@
                 item.style.animationDelay = `${index * 50}ms`;
                 item.innerHTML = `
                     <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500 bg-stone-200 skeleton-shimmer">
-                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');">
+                        <img src="${loc.image}" alt="${loc.title}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');">
                         <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
                     </div>
                     <div class="flex-grow min-w-0 flex flex-col h-28 justify-between py-0.5">
@@ -1752,7 +1761,7 @@
                 marker.bindPopup(L.popup({closeButton: false, className: 'modern-popup'}).setContent(`
                     <div class="group">
                         <div class="relative h-40 overflow-hidden">
-                            <img src="${loc.image}" alt="${loc.title}" class="popup-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <img src="${loc.image}" alt="${loc.title}" decoding="async" class="popup-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold shadow-sm border border-white/50">
                                 ${loc.emoji}
@@ -1946,21 +1955,21 @@
 
                     const sheetHeight = getSheetHeight();
                     const halfHeight = getHalfHeight();
-                    const threshold = 60; // Lower threshold for snappier feel
-                    const velocityThreshold = 0.3; // More sensitive flick
+                    const threshold = 40; // Even lower threshold for very snappy feel
+                    const velocityThreshold = 0.2; // Highly sensitive flick
 
                     // Logic to determine snap
                     // dragging UP (negative delta) -> wants Full
                     // dragging DOWN (positive delta) -> wants Half
 
                     if (currentSheetState === 'half') {
-                        if (movedY < -threshold || (movedY < -10 && velocity > velocityThreshold)) {
+                        if (movedY < -threshold || (movedY < -5 && velocity > velocityThreshold)) {
                             snapToState('full');
                         } else {
                             snapToState('half');
                         }
                     } else { // full
-                        if (movedY > threshold || (movedY > 10 && velocity > velocityThreshold)) {
+                        if (movedY > threshold || (movedY > 5 && velocity > velocityThreshold)) {
                             snapToState('half');
                         } else {
                             snapToState('full');
