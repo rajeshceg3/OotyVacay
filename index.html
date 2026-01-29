@@ -1040,7 +1040,7 @@
     </button>
 
     <!-- Location Detail Modal -->
-    <div id="location-modal">
+    <div id="location-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
             <button type="button" class="modal-close-btn" aria-label="Close details modal">
                 <i data-feather="x" class="w-5 h-5"></i>
@@ -1099,7 +1099,7 @@
                     </p>
                     <div class="flex gap-2 mt-4">
                         <button type="button" id="toggle-route-btn" class="flex-1 py-2.5 px-4 rounded-xl text-white text-sm font-semibold bg-blue-600 hover:bg-blue-700 shadow-sm transition-all hidden">Show Route</button>
-                         <button type="button" id="clear-itinerary-btn" class="px-4 py-2.5 rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 text-sm font-medium transition-all hidden">
+                         <button type="button" id="clear-itinerary-btn" class="px-4 py-2.5 rounded-xl text-gray-600 hover:text-red-600 hover:bg-red-50 text-sm font-medium transition-all hidden" aria-label="Clear itinerary">
                             <i data-feather="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
