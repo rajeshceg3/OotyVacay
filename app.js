@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update visibility
         itineraryEmptyEl.style.display = itinerary.length === 0 ? 'block' : 'none';
         clearItineraryBtn.style.display = itinerary.length === 0 ? 'none' : 'block';
-        toggleRouteBtn.style.display = itinerary.length >= 2 ? 'block' : 'none';
+        // Always show Show Route button (or let it be visible but handle validation on click) to allow feedback
+        toggleRouteBtn.style.display = 'block';
 
         updateButtonStates();
         feather.replace();
@@ -456,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
         content.className = 'flex flex-col h-full';
         content.innerHTML = `
             <div class="relative h-72 w-full modal-stagger group flex-shrink-0">
-                <img src="${location.image}" alt="${location.title}" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Unavailable';">
+                <img src="${escapeHTML(location.image)}" alt="${escapeHTML(location.title)}" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Unavailable';">
                 <div class="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent"></div>
                 <div class="absolute bottom-6 left-8 right-6 text-left">
                     <div class="emoji-icon text-5xl mb-4 drop-shadow-xl origin-left inline-block">${location.emoji}</div>
@@ -575,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
         item.style.animationDelay = `${index * 50}ms`;
         item.innerHTML = `
             <div class="relative w-28 h-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500 bg-stone-200 skeleton-shimmer">
-                <img src="${loc.image}" alt="${escapeHTML(loc.title)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Unavailable'; this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');">
+                <img src="${escapeHTML(loc.image)}" alt="${escapeHTML(loc.title)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-0" onload="this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Unavailable'; this.classList.remove('opacity-0'); this.parentElement.classList.remove('skeleton-shimmer');">
                 <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
             </div>
             <div class="flex-grow min-w-0 flex flex-col h-28 justify-between py-0.5">
@@ -705,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.bindPopup(L.popup({closeButton: false, className: 'modern-popup'}).setContent(`
             <div class="group">
                 <div class="relative h-40 overflow-hidden">
-                    <img src="${loc.image}" alt="${escapeHTML(loc.title)}" decoding="async" class="popup-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <img src="${escapeHTML(loc.image)}" alt="${escapeHTML(loc.title)}" decoding="async" class="popup-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold shadow-sm border border-white/50">
                         ${loc.emoji}
