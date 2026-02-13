@@ -770,6 +770,203 @@ document.addEventListener('DOMContentLoaded', function () {
         mobilePanelClose.addEventListener('click', () => toggleMobileItinerary(false));
     }
 
+    // --- Tour Logic ---
+    class TourManager {
+        constructor(steps) {
+            this.steps = steps;
+            this.currentIndex = -1;
+            this.spotlight = null;
+            this.tooltip = null;
+            this.isActive = false;
+            this.loopId = null;
+
+            this.initElements();
+
+            // Handle escape key
+            document.addEventListener('keydown', (e) => {
+                if (this.isActive && e.key === 'Escape') this.end();
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (this.isActive) this.updatePosition();
+            });
+        }
+
+        initElements() {
+            // Create Spotlight
+            this.spotlight = document.createElement('div');
+            this.spotlight.className = 'tour-spotlight';
+            document.body.appendChild(this.spotlight);
+
+            // Create Tooltip
+            this.tooltip = document.createElement('div');
+            this.tooltip.className = 'tour-tooltip';
+            this.tooltip.innerHTML = `
+                <div class="tour-content">
+                    <h3 class="font-serif text-xl font-bold mb-2"></h3>
+                    <p class="text-stone-600 mb-6"></p>
+                </div>
+                <div class="tour-footer flex justify-between items-center">
+                    <button class="tour-btn tour-btn-skip text-sm text-stone-400 hover:text-stone-600">Skip</button>
+                    <div class="tour-steps text-xs font-bold bg-stone-100 px-3 py-1 rounded-full text-stone-500"></div>
+                    <button class="tour-btn tour-btn-next bg-stone-900 text-white px-4 py-2 rounded-lg font-medium shadow-md hover:bg-black transition-transform active:scale-95 flex items-center gap-2">
+                        Next <i data-feather="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="tour-arrow absolute w-4 h-4 bg-white rotate-45 -z-10 shadow-sm"></div>
+            `;
+            document.body.appendChild(this.tooltip);
+
+            // Bind events
+            this.tooltip.querySelector('.tour-btn-next').addEventListener('click', () => this.next());
+            this.tooltip.querySelector('.tour-btn-skip').addEventListener('click', () => this.end());
+        }
+
+        start() {
+            if (!this.steps || this.steps.length === 0) return;
+            this.isActive = true;
+            this.currentIndex = -1;
+            this.spotlight.classList.add('active');
+            this.tooltip.classList.add('active');
+
+            // Start the position update loop
+            this.loop();
+
+            this.next();
+        }
+
+        end() {
+            this.isActive = false;
+            this.spotlight.classList.remove('active');
+            this.tooltip.classList.remove('active');
+            this.currentIndex = -1;
+            if (this.loopId) cancelAnimationFrame(this.loopId);
+
+            // Reset styles after transition
+            setTimeout(() => {
+                if (!this.isActive) {
+                    this.spotlight.style.width = '0';
+                    this.spotlight.style.height = '0';
+                    this.spotlight.style.top = '-9999px';
+                    this.spotlight.style.left = '-9999px';
+                }
+            }, 600);
+        }
+
+        loop() {
+            if (this.isActive) {
+                this.updatePosition();
+                this.loopId = requestAnimationFrame(() => this.loop());
+            }
+        }
+
+        async next() {
+            this.currentIndex++;
+            if (this.currentIndex >= this.steps.length) {
+                this.end();
+                return;
+            }
+
+            const step = this.steps[this.currentIndex];
+
+            // Execute pre-action (e.g., scroll, map fly)
+            if (step.onShow) {
+                // If onShow returns a promise, wait for it
+                await step.onShow();
+            }
+
+            this.renderStep(step);
+        }
+
+        renderStep(step) {
+            const target = typeof step.target === 'string' ? document.querySelector(step.target) : step.target();
+
+            if (!target) {
+                console.warn('Tour target not found:', step.target);
+                // Try next step if target missing
+                setTimeout(() => this.next(), 100);
+                return;
+            }
+
+            // Update Content
+            const titleEl = this.tooltip.querySelector('h3');
+            const descEl = this.tooltip.querySelector('p');
+            const stepEl = this.tooltip.querySelector('.tour-steps');
+            const nextBtn = this.tooltip.querySelector('.tour-btn-next');
+
+            titleEl.textContent = step.title;
+            descEl.textContent = step.content;
+            stepEl.textContent = `${this.currentIndex + 1} / ${this.steps.length}`;
+
+            if (this.currentIndex === this.steps.length - 1) {
+                nextBtn.innerHTML = 'Finish <i data-feather="check" class="w-4 h-4"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i data-feather="arrow-right" class="w-4 h-4"></i>';
+            }
+            feather.replace();
+
+            // Initial positioning handled by loop, but force one update now to prevent jump
+            this.updatePosition();
+        }
+
+        updatePosition() {
+            const step = this.steps[this.currentIndex];
+            if (!step) return;
+
+            const targetElement = typeof step.target === 'string' ? document.querySelector(step.target) : step.target();
+            if (!targetElement) return;
+
+            const rect = targetElement.getBoundingClientRect();
+            const padding = 12; // Breathing room for spotlight
+
+            // Update Spotlight
+            this.spotlight.style.width = `${rect.width + padding * 2}px`;
+            this.spotlight.style.height = `${rect.height + padding * 2}px`;
+            this.spotlight.style.top = `${rect.top - padding}px`;
+            this.spotlight.style.left = `${rect.left - padding}px`;
+
+            // Tooltip Positioning
+            const tooltipRect = this.tooltip.getBoundingClientRect();
+            const margin = 16;
+
+            let top, left;
+            let placement = step.position || 'bottom';
+
+            // Basic Logic (can be smarter)
+            if (placement === 'right') {
+                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+                left = rect.right + margin + padding;
+            } else if (placement === 'left') {
+                top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+                left = rect.left - tooltipRect.width - margin - padding;
+            } else if (placement === 'top') {
+                top = rect.top - tooltipRect.height - margin - padding;
+                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            } else { // Bottom (Default)
+                top = rect.bottom + margin + padding;
+                left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            }
+
+            // Boundary Checks (Keep in viewport)
+            if (left < margin) left = margin;
+            if (left + tooltipRect.width > window.innerWidth - margin) left = window.innerWidth - tooltipRect.width - margin;
+
+            if (top < margin) top = margin;
+            if (top + tooltipRect.height > window.innerHeight - margin) {
+                // If overflow bottom, flip to top
+                if (placement === 'bottom') {
+                     top = rect.top - tooltipRect.height - margin - padding;
+                } else {
+                     top = window.innerHeight - tooltipRect.height - margin;
+                }
+            }
+
+            this.tooltip.style.top = `${top}px`;
+            this.tooltip.style.left = `${left}px`;
+        }
+    }
+
     // --- Load, Render, and Init ---
     loadItinerary();
     renderItinerary();
@@ -933,4 +1130,84 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     initMobileSheet();
+
+    // --- Tour Initialization ---
+    const tourSteps = [
+        {
+            title: "Welcome to Ooty",
+            content: "Explore the Queen of Hill Stations with our interactive guide. Let us show you around!",
+            target: ".guide-badge", // Or h1
+            position: "bottom"
+        },
+        {
+            title: "Filter Your Interests",
+            content: "Looking for something specific? Use these filters to find gardens, lakes, or viewpoints.",
+            target: "#filter-container",
+            position: "bottom"
+        },
+        {
+            title: "Browse Locations",
+            content: "Scroll through our curated list of top attractions. Click on any card to see it on the map.",
+            target: ".location-item", // First one
+            position: "right",
+            onShow: async () => {
+                const el = document.querySelector('.location-item');
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                await new Promise(r => setTimeout(r, 600));
+            }
+        },
+        {
+            title: "Interactive Map",
+            content: "Locations are pinned on the map. Hover over them to see details.",
+            target: () => {
+                const id = 'botanical_gardens';
+                if (markers[id]) return markers[id].getElement();
+                return document.querySelector('.leaflet-marker-icon');
+            },
+            position: "left",
+            onShow: async () => {
+                const id = 'botanical_gardens';
+                const loc = locations.find(l => l.id === id);
+                if (loc) {
+                     map.flyTo([loc.lat, loc.lng], 14, { duration: 1.5 });
+                     await new Promise(r => setTimeout(r, 1600));
+                     if (markers[id]) markers[id].openPopup();
+                }
+            }
+        },
+        {
+            title: "Plan Your Trip",
+            content: "Found a place you like? Click the 'plus' button to add it to your personal itinerary.",
+            target: ".location-item .add-sidebar-btn",
+            position: "bottom",
+             onShow: async () => {
+                const el = document.querySelector('.location-item');
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                await new Promise(r => setTimeout(r, 500));
+            }
+        },
+        {
+            title: "View Itinerary",
+            content: "Track your selected locations here. You can also view the optimal route between them.",
+            target: () => {
+                if (window.innerWidth <= 768) {
+                    return document.querySelector('#toggle-itinerary-mobile');
+                }
+                return document.querySelector('#itinerary-panel');
+            },
+            position: "top"
+        }
+    ];
+
+    const tourManager = new TourManager(tourSteps);
+
+    const startTourBtn = document.getElementById('start-tour-btn');
+    if (startTourBtn) {
+        startTourBtn.addEventListener('click', () => {
+            // Scroll to top first
+            const list = document.querySelector('#location-list');
+            if(list) list.scrollTo({ top: 0, behavior: 'smooth' });
+            tourManager.start();
+        });
+    }
 });
