@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://unpkg.com https://*.basemaps.cartocdn.com https://placehold.co; connect-src 'self' https://cdn.tailwindcss.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://unpkg.com https://placehold.co; connect-src 'self' https://cdn.tailwindcss.com https://tiles.openfreemap.org; worker-src 'self';">
     <title>Explore & Plan Your Trip to Ooty</title>
 
     <!-- Leaflet CSS -->
@@ -21,6 +21,7 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="vendor/maplibre/maplibre-gl.css" />
     
     <style>
         /* --- Base & Typography --- */
@@ -1257,6 +1258,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
     
+    <script src="vendor/maplibre/maplibre-gl-csp.js"></script>
+    <script src="vendor/maplibre/leaflet-maplibre-gl.js"></script>
+    <script src="vendor/warm-map/style.js"></script>
     <script src="app.js" defer></script>
 </body>
 </html>
