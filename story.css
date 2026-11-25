@@ -82,3 +82,5 @@ footer p{max-width:calc(100% - 125px)}
  .world-title{left:410px}.map-art figcaption{font-size:23px;padding:7px}.map-tools{top:12px}
  footer{width:calc(100% - 410px)}
 }
+/* A failed basemap must never obscure the scene artwork. */
+#story-card #tile-note{position:static;margin:0;padding:0;background:none;color:#815c36;font:14px/1.2 Fraunces,Georgia,serif;max-width:none;white-space:nowrap}
