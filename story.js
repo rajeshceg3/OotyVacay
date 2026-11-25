@@ -20,7 +20,8 @@ const markArt=()=>{
 function sceneBox(){
  const card=$('#story-card').getBoundingClientRect();
  const portrait=innerWidth<760&&innerHeight>430;
- if(innerWidth>=480&&innerHeight<=430)return {left:card.right+16,right:innerWidth-12,top:109,bottom:innerHeight-78};
+ if(innerWidth>=480&&innerHeight>350&&innerHeight<=430)return {left:card.right+24,right:innerWidth-14,top:79,bottom:innerHeight-78};
+ if(innerWidth>=480&&innerHeight<=350)return {left:card.right+16,right:innerWidth-12,top:109,bottom:innerHeight-78};
  if(innerWidth>1100&&innerHeight>600)return {left:card.right+70,right:innerWidth-80,top:145,bottom:innerHeight-135};
  return portrait?{left:18,right:innerWidth-18,top:innerHeight<700?62:145,bottom:card.top-12}:{left:card.right+28,right:innerWidth-38,top:120,bottom:innerHeight-100};
 }
@@ -47,7 +48,7 @@ function drawPins(){
   marker.getElement().querySelector('button').onclick=()=>show(stops.indexOf(loc));
  }
 }
-function sizeArt(){const box=sceneBox();const avail=box.bottom-box.top;document.documentElement.style.setProperty('--art-width',Math.min(innerWidth>1100&&innerHeight>600?420:innerWidth<760?230:330,Math.max(100,(avail-(innerHeight<=430?65:80))*4/3))+'px');}
+function sizeArt(){const box=sceneBox();const avail=box.bottom-box.top;document.documentElement.style.setProperty('--art-width',Math.min(box.right-box.left-12,innerWidth>1100&&innerHeight>600?420:innerWidth<760?230:330,Math.max(100,(avail-(innerHeight<=350?65:innerHeight<=430?42:80))*4/3))+'px');}
 function focus(animate=true){
  clearTimeout(overview.timer);moving=true;wandering=false;document.body.classList.remove('wandering');$('#return-story').hidden=true;
  sizeArt();const loc=stops[index],box=sceneBox();
